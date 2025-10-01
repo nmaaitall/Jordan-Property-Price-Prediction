@@ -170,7 +170,7 @@ st.markdown("""
 
     /* Selectbox */
     div[data-baseweb="select"] {
-        background: #FFFFFF !important;
+        background: #F8F9FA  !important;
         border-radius: 12px !important;
         border: 2px solid #007BFF !important;
         margin-bottom: 1rem !important;
