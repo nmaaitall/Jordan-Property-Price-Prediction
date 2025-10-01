@@ -85,18 +85,20 @@ translations = {
 with st.sidebar:
     st.markdown("### ⚙️ Settings / الإعدادات")
 
-    lang = st.selectbox(
+    lang = st.radio(
         "🌐 Language / اللغة",
         options=['en', 'ar'],
         format_func=lambda x: 'English' if x == 'en' else 'العربية',
-        key='language'
+        key='language',
+        horizontal=True
     )
 
-    theme = st.selectbox(
-        f"🎨 Theme / المظهر",
+    theme = st.radio(
+        "🎨 Theme / المظهر",
         options=['light', 'dark'],
-        format_func=lambda x: 'Light / فاتح' if x == 'light' else 'Dark / داكن',
-        key='theme'
+        format_func=lambda x: 'Light' if x == 'light' else 'Dark',
+        key='theme',
+        horizontal=True
     )
 
 t = translations[lang]
@@ -137,10 +139,45 @@ st.markdown(f"""
 
     section[data-testid="stSidebar"] .stMarkdown h3 {{
         color: {text_primary} !important;
+        font-size: 1.2rem !important;
+    }}
+
+    section[data-testid="stSidebar"] .stMarkdown p {{
+        color: {text_secondary} !important;
+    }}
+
+    section[data-testid="stSidebar"] .stMarkdown strong {{
+        color: {text_primary} !important;
     }}
 
     section[data-testid="stSidebar"] label {{
         color: {text_secondary} !important;
+        font-weight: 700 !important;
+        font-size: 1rem !important;
+    }}
+
+    section[data-testid="stSidebar"] .stRadio > label {{
+        color: {text_primary} !important;
+    }}
+
+    section[data-testid="stSidebar"] div[role="radiogroup"] label {{
+        background: {input_bg} !important;
+        padding: 0.75rem 1rem !important;
+        border-radius: 8px !important;
+        border: 2px solid {input_border} !important;
+        margin: 0.25rem 0 !important;
+        transition: all 0.3s ease !important;
+    }}
+
+    section[data-testid="stSidebar"] div[role="radiogroup"] label:hover {{
+        border-color: #2a5298 !important;
+        background: {hover_bg} !important;
+    }}
+
+    section[data-testid="stSidebar"] div[role="radiogroup"] label[data-checked="true"] {{
+        background: #2a5298 !important;
+        color: white !important;
+        border-color: #2a5298 !important;
     }}
 
     .main .block-container {{
@@ -547,6 +584,32 @@ def load_model():
 
 model, le, regions_ar, regions_en, df = load_model()
 
+# Settings Header (Above main content)
+settings_container = st.container()
+with settings_container:
+    st.markdown(f"""
+    <div style='background: {card_bg}; padding: 1rem 1.5rem; border-radius: 12px; margin-bottom: 1.5rem; 
+                border: 2px solid {border_color}; display: flex; justify-content: space-between; align-items: center;'>
+        <div style='display: flex; gap: 2rem; align-items: center;'>
+            <div>
+                <span style='font-size: 1.1rem; color: {text_secondary}; font-weight: 600;'>🌐 Language:</span>
+                <span style='font-size: 1.1rem; color: {text_primary}; font-weight: 700; margin-left: 0.5rem;'>
+                    {'English' if lang == 'en' else 'العربية'}
+                </span>
+            </div>
+            <div>
+                <span style='font-size: 1.1rem; color: {text_secondary}; font-weight: 600;'>🎨 Theme:</span>
+                <span style='font-size: 1.1rem; color: {text_primary}; font-weight: 700; margin-left: 0.5rem;'>
+                    {'Light' if theme == 'light' else 'Dark'}
+                </span>
+            </div>
+        </div>
+        <div style='font-size: 0.9rem; color: {text_secondary};'>
+            ⚙️ Change in Sidebar
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
+
 # Header
 st.markdown(f"""
 <div class='header-container'>
@@ -626,25 +689,11 @@ with col_right:
         region_avg = df[df['المنطقة'] == region_ar]['السعر_دينار'].mean()
         diff_percent = ((predicted_price - region_avg) / region_avg) * 100
 
-        # Result Card
-        if diff_percent > 0:
-            trend_html = f"""
-                <div class='trend-container'>
-                    <div class='trend-content'>
-                        <span class='trend-icon trend-up'>↑</span>
-                        <p class='trend-text'>{abs(diff_percent):.1f}% {t['above']}</p>
-                    </div>
-                </div>
-            """
-        else:
-            trend_html = f"""
-                <div class='trend-container'>
-                    <div class='trend-content'>
-                        <span class='trend-icon trend-down'>↓</span>
-                        <p class='trend-text'>{abs(diff_percent):.1f}% {t['below']}</p>
-                    </div>
-                </div>
-            """
+        # Result Card with proper HTML rendering
+        trend_direction = 'up' if diff_percent > 0 else 'down'
+        trend_icon = '↑' if diff_percent > 0 else '↓'
+        trend_color = '#10b981' if diff_percent > 0 else '#ef4444'
+        trend_text = t['above'] if diff_percent > 0 else t['below']
 
         st.markdown(f"""
             <div class='result-card'>
@@ -652,7 +701,12 @@ with col_right:
                     <div class='result-badge'>{t['estimated']}</div>
                     <div class='result-price'>{predicted_price:,.0f}</div>
                     <div class='result-currency'>{t['currency']}</div>
-                    {trend_html}
+                    <div class='trend-container'>
+                        <div class='trend-content'>
+                            <span class='trend-icon' style='color: {trend_color};'>{trend_icon}</span>
+                            <p class='trend-text'>{abs(diff_percent):.1f}% {trend_text}</p>
+                        </div>
+                    </div>
                 </div>
             </div>
         """, unsafe_allow_html=True)
