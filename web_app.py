@@ -184,26 +184,33 @@ st.markdown("""
         background: #FFFFFF !important;
     }
     
-    /* النص المختار في القائمة المنسدلة */
-    div[data-baseweb="select"] div[aria-selected="true"] {
-        background: #007BFF !important;
-        color: #FFFFFF !important;
+    /* القائمة المنسدلة - خلفية بيضاء */
+    div[data-baseweb="popover"] {
+        background: #FFFFFF !important;
     }
     
-    /* القائمة المنسدلة نفسها */
     ul[role="listbox"] {
         background: #FFFFFF !important;
+        border: 2px solid #007BFF !important;
+        border-radius: 12px !important;
     }
     
     ul[role="listbox"] li {
         color: #212529 !important;
+        background: #FFFFFF !important;
         padding: 0.8rem 1rem !important;
+        font-weight: 600 !important;
     }
     
     ul[role="listbox"] li:hover {
         background: #E7F3FF !important;
+        color: #007BFF !important;
     }
-
+    
+    ul[role="listbox"] li[aria-selected="true"] {
+        background: #007BFF !important;
+        color: #FFFFFF !important;
+    }
     /* Number Input */
     .stNumberInput > div > div > input {
         background: #F8F9FA !important;
