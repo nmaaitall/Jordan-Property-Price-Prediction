@@ -4,391 +4,519 @@ from sklearn.ensemble import RandomForestRegressor
 from sklearn.preprocessing import LabelEncoder
 import plotly.graph_objects as go
 
-# ═══════════════════════════════════════
-# إعدادات الصفحة
-# ═══════════════════════════════════════
 st.set_page_config(
-    page_title="RealPredict - توقع أسعار العقارات",
+    page_title="RealPredict - Smart Real Estate Valuation",
     page_icon="🏢",
     layout="wide",
     initial_sidebar_state="expanded"
 )
 
-# ═══════════════════════════════════════
-# Custom CSS للتصميم الاحترافي
-# ═══════════════════════════════════════
-st.markdown("""
+# Translations
+translations = {
+    'en': {
+        'title': 'RealPredict',
+        'subtitle': 'Professional Real Estate Valuation Platform',
+        'powered': 'Powered by Advanced Machine Learning & Market Analytics',
+        'location': 'Property Location & Details',
+        'region': 'Select Region',
+        'area': 'Area (Square Meters)',
+        'bedrooms': 'Number of Bedrooms',
+        'bathrooms': 'Number of Bathrooms',
+        'age': 'Property Age (Years)',
+        'features': 'Property Features & Amenities',
+        'elevator': '🛗 Elevator Available',
+        'parking': '🚗 Parking Space',
+        'garden': '🌳 Private Garden',
+        'heating': '🔥 Central Heating',
+        'services': 'Proximity to Services & Amenities (1-10)',
+        'calculate': '🔍 Calculate Property Value',
+        'estimated': 'Estimated Market Value',
+        'currency': 'Jordanian Dinar (JOD)',
+        'above': 'Above Regional Average',
+        'below': 'Below Regional Average',
+        'price_sqm': 'Price/SQM',
+        'region_avg': 'Region Avg',
+        'comparison': 'Market Comparison Analysis',
+        'your_property': 'Your Property',
+        'regional_avg': 'Regional Average',
+        'ready': 'Ready to Estimate',
+        'enter_details': 'Enter property details and click',
+        'language': 'Language',
+        'theme': 'Theme',
+        'light': 'Light',
+        'dark': 'Dark'
+    },
+    'ar': {
+        'title': 'RealPredict',
+        'subtitle': 'منصة احترافية لتقييم العقارات',
+        'powered': 'مدعوم بالذكاء الاصطناعي وتحليلات السوق المتقدمة',
+        'location': 'الموقع وتفاصيل العقار',
+        'region': 'اختر المنطقة',
+        'area': 'المساحة (متر مربع)',
+        'bedrooms': 'عدد غرف النوم',
+        'bathrooms': 'عدد الحمامات',
+        'age': 'عمر العقار (سنوات)',
+        'features': 'مميزات ووسائل الراحة',
+        'elevator': '🛗 يوجد مصعد',
+        'parking': '🚗 موقف سيارات',
+        'garden': '🌳 حديقة خاصة',
+        'heating': '🔥 تدفئة مركزية',
+        'services': 'القرب من الخدمات (1-10)',
+        'calculate': '🔍 احسب قيمة العقار',
+        'estimated': 'القيمة السوقية المقدرة',
+        'currency': 'دينار أردني',
+        'above': 'أعلى من متوسط المنطقة',
+        'below': 'أقل من متوسط المنطقة',
+        'price_sqm': 'السعر/متر',
+        'region_avg': 'متوسط المنطقة',
+        'comparison': 'تحليل مقارنة السوق',
+        'your_property': 'عقارك',
+        'regional_avg': 'المتوسط الإقليمي',
+        'ready': 'جاهز للتقييم',
+        'enter_details': 'أدخل تفاصيل العقار واضغط',
+        'language': 'اللغة',
+        'theme': 'المظهر',
+        'light': 'فاتح',
+        'dark': 'داكن'
+    }
+}
+
+# Sidebar settings
+with st.sidebar:
+    st.markdown("### ⚙️ Settings / الإعدادات")
+
+    lang = st.selectbox(
+        "🌐 Language / اللغة",
+        options=['en', 'ar'],
+        format_func=lambda x: 'English' if x == 'en' else 'العربية',
+        key='language'
+    )
+
+    theme = st.selectbox(
+        f"🎨 Theme / المظهر",
+        options=['light', 'dark'],
+        format_func=lambda x: 'Light / فاتح' if x == 'light' else 'Dark / داكن',
+        key='theme'
+    )
+
+t = translations[lang]
+
+# Dynamic CSS based on theme
+bg_color = '#ffffff' if theme == 'light' else '#0f172a'
+bg_gradient = 'linear-gradient(135deg, #f5f7fa 0%, #e8ecf1 100%)' if theme == 'light' else 'linear-gradient(135deg, #0f172a 0%, #1e293b 100%)'
+card_bg = '#ffffff' if theme == 'light' else '#1e293b'
+text_primary = '#1e3c72' if theme == 'light' else '#f1f5f9'
+text_secondary = '#334155' if theme == 'light' else '#cbd5e1'
+border_color = '#e8ecf1' if theme == 'light' else '#334155'
+input_bg = '#f8fafc' if theme == 'light' else '#0f172a'
+input_border = '#e2e8f0' if theme == 'light' else '#475569'
+hover_bg = '#f1f5f9' if theme == 'light' else '#334155'
+checkbox_bg = '#f8fafc' if theme == 'light' else '#1e293b'
+
+# Enhanced Professional CSS
+st.markdown(f"""
 <style>
-    /* إخفاء عناصر Streamlit الافتراضية */
-    #MainMenu {visibility: hidden;}
-    footer {visibility: hidden;}
-    header {visibility: hidden;}
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:wght@700;800&display=swap');
 
-    /* استيراد خطوط احترافية */
-    @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&family=Roboto:wght@400;500;700;900&display=swap');
+    #MainMenu {{visibility: hidden;}}
+    footer {{visibility: hidden;}}
+    header {{visibility: hidden;}}
 
-    /* الخلفية الاحترافية للعقارات */
-    .stApp {
-        background: linear-gradient(135deg, #1e3c72 0%, #2a5298 50%, #7e8ba3 100%);
-        background-size: 400% 400%;
-        animation: gradientShift 20s ease infinite;
-    }
+    * {{
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    }}
 
-    @keyframes gradientShift {
-        0% { background-position: 0% 50%; }
-        50% { background-position: 100% 50%; }
-        100% { background-position: 0% 50%; }
-    }
+    .stApp {{
+        background: {bg_gradient};
+    }}
 
-    /* Container رئيسي */
-    .main .block-container {
+    section[data-testid="stSidebar"] {{
+        background: {card_bg};
+        border-right: 2px solid {border_color};
+    }}
+
+    section[data-testid="stSidebar"] .stMarkdown h3 {{
+        color: {text_primary} !important;
+    }}
+
+    section[data-testid="stSidebar"] label {{
+        color: {text_secondary} !important;
+    }}
+
+    .main .block-container {{
         padding: 2rem 3rem;
         max-width: 1400px;
-        position: relative;
-        z-index: 1;
-    }
+    }}
 
-    /* Logo & Header Section */
-    .header-section {
-        text-align: center;
-        margin-bottom: 3rem;
-        animation: fadeInDown 0.8s ease-in-out;
-    }
-
-    .logo-title {
-        color: white;
-        font-size: 4.5rem;
-        font-weight: 900;
-        margin-bottom: 0.5rem;
-        text-shadow: 
-            0 4px 8px rgba(0, 0, 0, 0.3),
-            0 0 30px rgba(255, 255, 255, 0.2);
-        font-family: 'Cairo', 'Roboto', sans-serif;
-        letter-spacing: 3px;
-    }
-
-    .logo-subtitle {
-        color: rgba(255, 255, 255, 0.9);
-        font-size: 1.3rem;
-        font-weight: 500;
-        margin-bottom: 1rem;
-        font-family: 'Cairo', 'Roboto', sans-serif;
-    }
-
-    .developer-badge {
-        display: inline-block;
-        background: rgba(255, 255, 255, 0.15);
-        backdrop-filter: blur(10px);
-        padding: 0.7rem 1.5rem;
-        border-radius: 50px;
-        color: white;
-        font-size: 0.95rem;
-        font-weight: 600;
-        border: 2px solid rgba(255, 255, 255, 0.3);
-        margin-top: 0.5rem;
-        font-family: 'Cairo', 'Roboto', sans-serif;
-    }
-
-    /* الـ Cards الاحترافية */
-    .custom-card {
-        background: rgba(255, 255, 255, 0.97);
-        border-radius: 20px;
-        padding: 2.5rem;
-        box-shadow: 
-            0 15px 45px rgba(0, 0, 0, 0.2),
-            0 0 0 1px rgba(255, 255, 255, 0.5) inset;
-        backdrop-filter: blur(10px);
-        margin-bottom: 2rem;
-        animation: slideIn 0.8s ease-in-out;
-        transition: all 0.3s ease;
-    }
-
-    .custom-card:hover {
-        transform: translateY(-3px);
-        box-shadow: 0 20px 50px rgba(0, 0, 0, 0.25);
-    }
-
-    /* العناوين */
-    .card-header {
-        font-size: 1.8rem;
-        font-weight: 700;
-        color: #1e3c72;
-        margin-bottom: 1.5rem;
-        display: flex;
-        align-items: center;
-        gap: 0.8rem;
-        font-family: 'Cairo', 'Roboto', sans-serif;
-        padding-bottom: 1rem;
-        border-bottom: 3px solid #2a5298;
-    }
-
-    /* النتيجة */
-    .result-card {
+    /* Header Section */
+    .header-container {{
         background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
-        border-radius: 25px;
-        padding: 3rem;
-        text-align: center;
-        box-shadow: 0 20px 50px rgba(30, 60, 114, 0.4);
-        animation: resultPulse 2.5s infinite;
+        border-radius: 24px;
+        padding: 3rem 2.5rem;
+        margin-bottom: 2.5rem;
+        box-shadow: 0 10px 40px rgba(30, 60, 114, 0.25);
         position: relative;
         overflow: hidden;
-    }
+    }}
 
-    @keyframes resultPulse {
-        0%, 100% { transform: scale(1); }
-        50% { transform: scale(1.02); }
-    }
+    .header-container::before {{
+        content: '';
+        position: absolute;
+        top: 0;
+        right: 0;
+        width: 400px;
+        height: 400px;
+        background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+        border-radius: 50%;
+    }}
 
-    .result-icon {
-        font-size: 5rem;
-        margin-bottom: 1rem;
-        animation: bounce 2s infinite;
-        filter: drop-shadow(0 5px 15px rgba(0, 0, 0, 0.3));
-    }
+    .logo-container {{
+        position: relative;
+        z-index: 1;
+        text-align: {'right' if lang == 'ar' else 'left'};
+    }}
 
-    @keyframes bounce {
-        0%, 100% { transform: translateY(0); }
-        50% { transform: translateY(-8px); }
-    }
+    .logo-text {{
+        font-family: 'Playfair Display', serif;
+        font-size: 3.2rem;
+        font-weight: 800;
+        margin-bottom: 0.5rem;
+        color: #ffffff;
+        letter-spacing: -1px;
+    }}
 
-    .result-text {
-        color: white;
+    .logo-icon {{
+        display: inline-block;
+        margin-{'left' if lang == 'ar' else 'right'}: 0.5rem;
+        font-size: 3rem;
+    }}
+
+    .tagline {{
+        color: rgba(255, 255, 255, 0.9);
+        font-size: 1.15rem;
+        font-weight: 500;
+        letter-spacing: 0.5px;
+    }}
+
+    .subtitle {{
+        color: rgba(255, 255, 255, 0.75);
+        font-size: 0.95rem;
+        margin-top: 1rem;
+        font-weight: 400;
+    }}
+
+    /* Main Grid Layout */
+    .input-section {{
+        background: {card_bg};
+        border-radius: 20px;
+        padding: 2rem;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, {'0.08' if theme == 'light' else '0.3'});
+        border: 1px solid {border_color};
+        margin-bottom: 1.5rem;
+    }}
+
+    .section-header {{
         font-size: 1.4rem;
-        font-weight: 600;
-        margin-bottom: 1rem;
-        font-family: 'Cairo', 'Roboto', sans-serif;
-    }
+        font-weight: 700;
+        color: {text_primary};
+        margin-bottom: 1.5rem;
+        padding-bottom: 0.75rem;
+        border-bottom: 3px solid #2a5298;
+        display: flex;
+        align-items: center;
+        direction: {'rtl' if lang == 'ar' else 'ltr'};
+    }}
 
-    .result-price {
-        color: white;
-        font-size: 4rem;
-        font-weight: 900;
-        text-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-        font-family: 'Cairo', 'Roboto', sans-serif;
+    .section-icon {{
+        margin-{'left' if lang == 'ar' else 'right'}: 0.75rem;
+        font-size: 1.6rem;
+    }}
+
+    /* Enhanced Result Card */
+    .result-card {{
+        background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+        border-radius: 24px;
+        padding: 3rem 2.5rem;
+        text-align: center;
+        box-shadow: 0 12px 40px rgba(30, 60, 114, 0.35);
+        position: relative;
+        overflow: hidden;
+        min-height: 380px;
+    }}
+
+    .result-card::before {{
+        content: '';
+        position: absolute;
+        top: -50%;
+        right: -50%;
+        width: 200%;
+        height: 200%;
+        background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+        animation: pulse 4s ease-in-out infinite;
+    }}
+
+    @keyframes pulse {{
+        0%, 100% {{ transform: scale(1); opacity: 0.5; }}
+        50% {{ transform: scale(1.1); opacity: 0.3; }}
+    }}
+
+    .result-content {{
+        position: relative;
+        z-index: 1;
+    }}
+
+    .result-badge {{
+        display: inline-block;
+        background: rgba(255, 255, 255, 0.2);
+        color: #ffffff;
+        padding: 0.5rem 1.5rem;
+        border-radius: 50px;
+        font-size: 0.85rem;
+        font-weight: 700;
         letter-spacing: 2px;
-    }
+        text-transform: uppercase;
+        margin-bottom: 1.5rem;
+        backdrop-filter: blur(10px);
+    }}
 
-    /* الأزرار */
-    .stButton>button {
+    .result-price {{
+        color: #ffffff;
+        font-size: 4.5rem;
+        font-weight: 900;
+        margin: 1.5rem 0;
+        text-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        line-height: 1;
+        letter-spacing: -2px;
+    }}
+
+    .result-currency {{
+        color: rgba(255, 255, 255, 0.9);
+        font-size: 1.3rem;
+        font-weight: 600;
+        margin-bottom: 2rem;
+    }}
+
+    .trend-container {{
+        background: rgba(255, 255, 255, 0.95);
+        border-radius: 16px;
+        padding: 1.25rem 2rem;
+        margin: 2rem auto 0 auto;
+        max-width: 85%;
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+        backdrop-filter: blur(10px);
+    }}
+
+    .trend-content {{
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 1rem;
+    }}
+
+    .trend-icon {{
+        font-size: 2rem;
+        font-weight: 800;
+    }}
+
+    .trend-up {{ color: #10b981; }}
+    .trend-down {{ color: #ef4444; }}
+
+    .trend-text {{
+        color: #1e293b;
+        font-size: 1.15rem;
+        font-weight: 700;
+        margin: 0;
+    }}
+
+    /* Enhanced Form Elements */
+    label {{
+        font-weight: 600 !important;
+        color: {text_secondary} !important;
+        font-size: 0.95rem !important;
+        margin-bottom: 0.5rem !important;
+        display: block !important;
+    }}
+
+    /* Selectbox Styling */
+    div[data-baseweb="select"] {{
+        background: {input_bg} !important;
+        border-radius: 12px !important;
+        border: 2px solid {input_border} !important;
+        transition: all 0.3s ease !important;
+    }}
+
+    div[data-baseweb="select"]:hover {{
+        border-color: #2a5298 !important;
+        background: {hover_bg} !important;
+    }}
+
+    div[data-baseweb="select"] > div {{
+        padding: 1rem 1.25rem !important;
+        font-size: 1rem !important;
+        font-weight: 600 !important;
+        color: {text_primary} !important;
+        background: transparent !important;
+    }}
+
+    div[data-baseweb="popover"] {{
+        background: {card_bg} !important;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, {'0.15' if theme == 'light' else '0.5'}) !important;
+        border: 2px solid {input_border} !important;
+        border-radius: 12px !important;
+    }}
+
+    ul[role="listbox"] {{
+        background: {card_bg} !important;
+        border: none !important;
+    }}
+
+    ul[role="listbox"] li {{
+        color: {text_primary} !important;
+        background: {card_bg} !important;
+        padding: 1rem 1.25rem !important;
+        font-weight: 600 !important;
+        transition: all 0.2s ease !important;
+    }}
+
+    ul[role="listbox"] li:hover {{
+        background: {hover_bg} !important;
+        color: #2a5298 !important;
+    }}
+
+    ul[role="listbox"] li[aria-selected="true"] {{
+        background: #2a5298 !important;
+        color: #ffffff !important;
+    }}
+
+    /* Number Input */
+    .stNumberInput > div > div > input {{
+        background: {input_bg} !important;
+        border: 2px solid {input_border} !important;
+        border-radius: 12px !important;
+        padding: 1rem 1.25rem !important;
+        font-size: 1rem !important;
+        font-weight: 600 !important;
+        color: {text_primary} !important;
+        transition: all 0.3s ease !important;
+    }}
+
+    .stNumberInput > div > div > input:focus {{
+        border-color: #2a5298 !important;
+        box-shadow: 0 0 0 3px rgba(42, 82, 152, 0.1) !important;
+        background: {card_bg} !important;
+    }}
+
+    /* Slider */
+    .stSlider > div > div > div > div {{
+        background: linear-gradient(90deg, #2a5298 0%, #1e3c72 100%) !important;
+        height: 6px !important;
+    }}
+
+    .stSlider > div > div > div > div > div {{
+        background: white !important;
+        border: 4px solid #2a5298 !important;
+        width: 26px !important;
+        height: 26px !important;
+        box-shadow: 0 3px 12px rgba(42, 82, 152, 0.4) !important;
+    }}
+
+    /* Checkboxes */
+    .stCheckbox {{
+        background: {checkbox_bg};
+        padding: 1rem 1.25rem;
+        border-radius: 12px;
+        margin-bottom: 0.75rem;
+        border: 2px solid {input_border};
+        transition: all 0.3s ease;
+    }}
+
+    .stCheckbox:hover {{
+        border-color: #2a5298;
+        background: {hover_bg};
+    }}
+
+    .stCheckbox label {{
+        font-weight: 600 !important;
+        font-size: 0.95rem !important;
+        color: {text_secondary} !important;
+    }}
+
+    /* Button */
+    .stButton>button {{
         width: 100%;
         background: linear-gradient(135deg, #2a5298 0%, #1e3c72 100%);
         color: white;
-        font-size: 1.3rem;
+        font-size: 1.15rem;
         font-weight: 700;
-        padding: 1.2rem 2rem;
-        border-radius: 15px;
+        padding: 1.15rem;
+        border-radius: 14px;
         border: none;
-        box-shadow: 0 8px 25px rgba(30, 60, 114, 0.4);
-        transition: all 0.3s ease;
-        margin-top: 1rem;
-        font-family: 'Cairo', 'Roboto', sans-serif;
-    }
-
-    .stButton>button:hover {
-        transform: translateY(-3px);
-        box-shadow: 0 12px 35px rgba(30, 60, 114, 0.6);
-        background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
-    }
-
-    /* Inputs */
-    .stSelectbox, .stNumberInput, .stSlider {
-        margin-bottom: 1.5rem;
-    }
-
-    input, select {
-        border-radius: 10px !important;
-        border: 2px solid #e2e8f0 !important;
-        transition: all 0.3s ease !important;
-        font-family: 'Cairo', 'Roboto', sans-serif !important;
-    }
-
-    input:focus, select:focus {
-        border-color: #2a5298 !important;
-        box-shadow: 0 0 0 3px rgba(42, 82, 152, 0.1) !important;
-    }
-
-    /* Labels */
-    label {
-        font-weight: 600 !important;
-        color: #2d3748 !important;
-        font-size: 1.05rem !important;
-        font-family: 'Cairo', 'Roboto', sans-serif !important;
-    }
-
-    /* Sidebar */
-    [data-testid="stSidebar"] {
-        background: rgba(255, 255, 255, 0.97) !important;
-        backdrop-filter: blur(10px) !important;
-        border-radius: 0 20px 20px 0 !important;
-        box-shadow: 5px 0 25px rgba(0, 0, 0, 0.1) !important;
-    }
-
-    /* Language Selector */
-    .language-selector {
-        background: linear-gradient(135deg, #f7fafc 0%, #edf2f7 100%);
-        padding: 1.2rem;
-        border-radius: 15px;
-        margin-bottom: 1.5rem;
-        border: 2px solid #2a5298;
-    }
-
-    /* Metrics */
-    [data-testid="stMetricValue"] {
-        font-size: 1.6rem !important;
-        font-weight: 700 !important;
-        color: #1e3c72 !important;
-        font-family: 'Cairo', 'Roboto', sans-serif !important;
-    }
-
-    [data-testid="stMetricLabel"] {
-        font-size: 0.95rem !important;
-        font-weight: 600 !important;
-        color: #4a5568 !important;
-    }
-
-    /* Info boxes */
-    .info-box {
-        background: linear-gradient(135deg, rgba(30, 60, 114, 0.1) 0%, rgba(42, 82, 152, 0.1) 100%);
-        padding: 1.5rem;
-        border-radius: 15px;
-        border-left: 5px solid #2a5298;
         margin: 1.5rem 0;
-        font-family: 'Cairo', 'Roboto', sans-serif;
-    }
+        box-shadow: 0 6px 20px rgba(42, 82, 152, 0.35);
+        transition: all 0.3s ease;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }}
 
-    /* Feature Cards */
-    .feature-card {
-        background: rgba(255, 255, 255, 0.97);
+    .stButton>button:hover {{
+        transform: translateY(-3px);
+        box-shadow: 0 10px 30px rgba(42, 82, 152, 0.45);
+    }}
+
+    /* Chart Container */
+    .chart-section {{
+        background: {card_bg};
         border-radius: 20px;
         padding: 2rem;
-        text-align: center;
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
-        transition: all 0.3s ease;
-        border: 2px solid transparent;
-    }
+        margin-top: 2rem;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, {'0.08' if theme == 'light' else '0.3'});
+        border: 1px solid {border_color};
+    }}
 
-    .feature-card:hover {
-        transform: translateY(-5px);
-        border-color: #2a5298;
-        box-shadow: 0 15px 40px rgba(30, 60, 114, 0.3);
-    }
-
-    .feature-icon {
-        font-size: 3.5rem;
-        margin-bottom: 1rem;
-    }
-
-    .feature-title {
-        font-size: 1.4rem;
+    .chart-title {{
+        font-size: 1.3rem;
         font-weight: 700;
-        color: #1e3c72;
-        margin-bottom: 0.5rem;
-        font-family: 'Cairo', 'Roboto', sans-serif;
-    }
-
-    .feature-text {
-        color: #718096;
-        font-size: 0.95rem;
-        font-family: 'Cairo', 'Roboto', sans-serif;
-    }
-
-    /* Stats Cards */
-    .stats-card {
-        background: linear-gradient(135deg, #2a5298 0%, #1e3c72 100%);
-        color: white;
-        padding: 1.5rem;
-        border-radius: 15px;
-        text-align: center;
-        margin-bottom: 1rem;
-        box-shadow: 0 8px 20px rgba(30, 60, 114, 0.3);
-    }
-
-    .stats-number {
-        font-size: 2.5rem;
-        font-weight: 900;
-        margin-bottom: 0.3rem;
-        font-family: 'Cairo', 'Roboto', sans-serif;
-    }
-
-    .stats-label {
-        font-size: 0.9rem;
-        opacity: 0.9;
-        font-family: 'Cairo', 'Roboto', sans-serif;
-    }
-
-    /* Checkboxes */
-    .stCheckbox {
-        background: #f7fafc;
-        padding: 1rem;
-        border-radius: 10px;
-        margin-bottom: 0.8rem;
-        transition: all 0.3s ease;
-        border: 2px solid transparent;
-    }
-
-    .stCheckbox:hover {
-        background: #edf2f7;
-        border-color: #2a5298;
-    }
-
-    /* Empty State */
-    .empty-state {
-        text-align: center;
-        padding: 4rem 2rem;
-        animation: float 3s ease-in-out infinite;
-    }
-
-    @keyframes float {
-        0%, 100% { transform: translateY(0); }
-        50% { transform: translateY(-10px); }
-    }
-
-    .empty-state-icon {
-        font-size: 5rem;
+        color: {text_primary};
         margin-bottom: 1.5rem;
-        filter: drop-shadow(0 8px 20px rgba(30, 60, 114, 0.3));
-    }
+    }}
 
-    /* Animations */
-    @keyframes fadeInDown {
-        from { opacity: 0; transform: translateY(-30px); }
-        to { opacity: 1; transform: translateY(0); }
-    }
+    /* Info Cards */
+    .info-grid {{
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1rem;
+        margin-top: 1.5rem;
+    }}
 
-    @keyframes slideIn {
-        from { opacity: 0; transform: translateX(-20px); }
-        to { opacity: 1; transform: translateX(0); }
-    }
+    .info-card-mini {{
+        background: {input_bg};
+        border-radius: 12px;
+        padding: 1.25rem;
+        border: 2px solid {input_border};
+        text-align: center;
+    }}
 
-    /* Scrollbar */
-    ::-webkit-scrollbar {
-        width: 8px;
-        height: 8px;
-    }
+    .info-card-mini .label {{
+        font-size: 0.85rem;
+        color: {text_secondary};
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }}
 
-    ::-webkit-scrollbar-track {
-        background: rgba(255, 255, 255, 0.1);
-        border-radius: 10px;
-    }
-
-    ::-webkit-scrollbar-thumb {
-        background: linear-gradient(180deg, #2a5298, #1e3c72);
-        border-radius: 10px;
-    }
-
-    ::-webkit-scrollbar-thumb:hover {
-        background: linear-gradient(180deg, #1e3c72, #2a5298);
-    }
+    .info-card-mini .value {{
+        font-size: 1.5rem;
+        color: {text_primary};
+        font-weight: 800;
+    }}
 </style>
 """, unsafe_allow_html=True)
 
 
-# ═══════════════════════════════════════
-# تحميل النموذج
-# ═══════════════════════════════════════
+# Load Model
 @st.cache_resource
 def load_model():
-    """تحميل النموذج والبيانات"""
     df = pd.read_csv('jordan_properties.csv')
     le = LabelEncoder()
     df['المنطقة_رقم'] = le.fit_transform(df['المنطقة'])
@@ -419,180 +547,65 @@ def load_model():
 
 model, le, regions_ar, regions_en, df = load_model()
 
-# ═══════════════════════════════════════
-# Sidebar - اختيار اللغة
-# ═══════════════════════════════════════
-with st.sidebar:
-    st.markdown("<div class='language-selector'>", unsafe_allow_html=True)
-    st.markdown("### 🌐 اختر اللغة / Select Language")
-    language = st.radio("", ["العربية", "English"], label_visibility="collapsed", horizontal=True)
-    st.markdown("</div>", unsafe_allow_html=True)
-
-    is_arabic = language == "العربية"
-
-    st.markdown("---")
-
-    if is_arabic:
-        st.markdown("### 📊 إحصائيات المنصة")
-
-        st.markdown(f"""
-        <div class='stats-card'>
-            <div class='stats-number'>{len(df):,}</div>
-            <div class='stats-label'>عقار مسجل</div>
+# Header
+st.markdown(f"""
+<div class='header-container'>
+    <div class='logo-container'>
+        <div class='logo-text'>
+            <span class='logo-icon'>🏢</span>{t['title']}
         </div>
-        """, unsafe_allow_html=True)
-
-        st.markdown(f"""
-        <div class='stats-card'>
-            <div class='stats-number'>98.5%</div>
-            <div class='stats-label'>دقة التوقع</div>
-        </div>
-        """, unsafe_allow_html=True)
-
-        st.markdown(f"""
-        <div class='stats-card'>
-            <div class='stats-number'>&lt;3s</div>
-            <div class='stats-label'>وقت الاستجابة</div>
-        </div>
-        """, unsafe_allow_html=True)
-
-    else:
-        st.markdown("### 📊 Platform Statistics")
-
-        st.markdown(f"""
-        <div class='stats-card'>
-            <div class='stats-number'>{len(df):,}</div>
-            <div class='stats-label'>Registered Properties</div>
-        </div>
-        """, unsafe_allow_html=True)
-
-        st.markdown(f"""
-        <div class='stats-card'>
-            <div class='stats-number'>98.5%</div>
-            <div class='stats-label'>Prediction Accuracy</div>
-        </div>
-        """, unsafe_allow_html=True)
-
-        st.markdown(f"""
-        <div class='stats-card'>
-            <div class='stats-number'>&lt;3s</div>
-            <div class='stats-label'>Response Time</div>
-        </div>
-        """, unsafe_allow_html=True)
-
-    st.markdown("---")
-
-    if is_arabic:
-        st.markdown("""
-        <div class='info-box'>
-        <strong>ℹ️ عن النظام</strong><br><br>
-        نظام RealPredict يستخدم خوارزميات الذكاء الاصطناعي المتقدمة لتوقع أسعار العقارات بدقة عالية
-        </div>
-        """, unsafe_allow_html=True)
-    else:
-        st.markdown("""
-        <div class='info-box'>
-        <strong>ℹ️ About System</strong><br><br>
-        RealPredict uses advanced AI algorithms to accurately predict property prices
-        </div>
-        """, unsafe_allow_html=True)
-
-# ═══════════════════════════════════════
-# Header Section
-# ═══════════════════════════════════════
-st.markdown("""
-<div class='header-section'>
-    <div class='logo-title'>RealPredict</div>
-    <div class='logo-subtitle'>نظام توقع أسعار العقارات بالذكاء الاصطناعي</div>
-    <div class='developer-badge'>👨‍💻 Developed by Nour Maaita</div>
+        <div class='tagline'>{t['subtitle']}</div>
+        <div class='subtitle'>{t['powered']}</div>
+    </div>
 </div>
 """, unsafe_allow_html=True)
 
-# ═══════════════════════════════════════
-# Layout رئيسي
-# ═══════════════════════════════════════
-col1, col2 = st.columns([1.2, 1])
+# Main Layout
+col_left, col_right = st.columns([1.2, 1], gap="large")
 
-# ═══════════════════════════════════════
-# العمود الأيسر - المدخلات
-# ═══════════════════════════════════════
-with col1:
-    st.markdown("<div class='custom-card'>", unsafe_allow_html=True)
+with col_left:
+    # Location & Basic Info
+    st.markdown(
+        f"<div class='input-section'><div class='section-header'><span class='section-icon'>📍</span>{t['location']}</div>",
+        unsafe_allow_html=True)
 
-    if is_arabic:
-        st.markdown("<div class='card-header'>📋 معلومات العقار</div>", unsafe_allow_html=True)
-    else:
-        st.markdown("<div class='card-header'>📋 Property Information</div>", unsafe_allow_html=True)
+    region_options = [regions_en[r] for r in regions_ar]
+    region = st.selectbox(t['region'], region_options, index=0)
+    region_ar = [k for k, v in regions_en.items() if v == region][0]
 
-    # المنطقة
-    if is_arabic:
-        region_options = regions_ar
-        region = st.selectbox("📍 المنطقة", region_options, index=0)
-        region_ar = region
-    else:
-        region_options = [regions_en[r] for r in regions_ar]
-        region = st.selectbox("📍 Region", region_options, index=0)
-        region_ar = [k for k, v in regions_en.items() if v == region][0]
-
-    # صف المساحة والغرف
-    col_a, col_b = st.columns(2)
-    with col_a:
-        area = st.number_input("📐 " + ("المساحة (م²)" if is_arabic else "Area (sqm)"),
-                               min_value=50, max_value=1000, value=150, step=10)
-    with col_b:
-        rooms = st.number_input("🛏️ " + ("عدد الغرف" if is_arabic else "Bedrooms"),
-                                min_value=1, max_value=10, value=3, step=1)
-
-    # صف الحمامات والعمر
-    col_c, col_d = st.columns(2)
-    with col_c:
-        bathrooms = st.number_input("🚿 " + ("عدد الحمامات" if is_arabic else "Bathrooms"),
-                                    min_value=1, max_value=5, value=2, step=1)
-    with col_d:
-        age = st.number_input("🏗️ " + ("عمر البناء (سنة)" if is_arabic else "Age (years)"),
-                              min_value=0, max_value=100, value=5, step=1)
-
-    # صف الطابق والخدمات
-    col_e, col_f = st.columns(2)
-    with col_e:
-        floor = st.number_input("🏢 " + ("رقم الطابق" if is_arabic else "Floor"),
-                                min_value=0, max_value=20, value=3, step=1)
-    with col_f:
-        services = st.slider("🏪 " + ("قرب الخدمات" if is_arabic else "Services"),
-                             1, 10, 7)
+    col1, col2 = st.columns(2)
+    with col1:
+        area = st.number_input(t['area'], 50, 1000, 150, 10)
+        rooms = st.number_input(t['bedrooms'], 1, 10, 3, 1)
+    with col2:
+        bathrooms = st.number_input(t['bathrooms'], 1, 5, 2, 1)
+        age = st.number_input(t['age'], 0, 100, 5, 1)
 
     st.markdown("</div>", unsafe_allow_html=True)
 
-    # المميزات
-    st.markdown("<div class='custom-card'>", unsafe_allow_html=True)
+    # Amenities
+    st.markdown(
+        f"<div class='input-section'><div class='section-header'><span class='section-icon'>✨</span>{t['features']}</div>",
+        unsafe_allow_html=True)
 
-    if is_arabic:
-        st.markdown("<div class='card-header'>✨ المميزات</div>", unsafe_allow_html=True)
-    else:
-        st.markdown("<div class='card-header'>✨ Features</div>", unsafe_allow_html=True)
+    col1, col2 = st.columns(2)
+    with col1:
+        elevator = st.checkbox(t['elevator'], True)
+        parking = st.checkbox(t['parking'], True)
+    with col2:
+        garden = st.checkbox(t['garden'], False)
+        heating = st.checkbox(t['heating'], True)
 
-    col_g, col_h = st.columns(2)
-    with col_g:
-        elevator = st.checkbox("🛗 " + ("مصعد" if is_arabic else "Elevator"), value=True)
-        garden = st.checkbox("🌳 " + ("حديقة" if is_arabic else "Garden"), value=False)
-    with col_h:
-        parking = st.checkbox("🚗 " + ("موقف" if is_arabic else "Parking"), value=True)
-        heating = st.checkbox("🔥 " + ("تدفئة" if is_arabic else "Heating"), value=True)
+    st.markdown("<br>", unsafe_allow_html=True)
+    services = st.slider(t['services'], 1, 10, 7)
 
     st.markdown("</div>", unsafe_allow_html=True)
 
-# ═══════════════════════════════════════
-# العمود الأيمن - النتيجة
-# ═══════════════════════════════════════
-with col2:
-    # زر الحساب
-    if is_arabic:
-        calculate_btn = st.button("💎 احسب السعر", use_container_width=True)
-    else:
-        calculate_btn = st.button("💎 Calculate Price", use_container_width=True)
+    # Prediction Button
+    predict_button = st.button(t['calculate'])
 
-    if calculate_btn:
-        # التوقع
+with col_right:
+    if predict_button:
         region_encoded = le.transform([region_ar])[0]
 
         input_data = pd.DataFrame({
@@ -600,7 +613,7 @@ with col2:
             'عدد_الغرف': [rooms],
             'عدد_الحمامات': [bathrooms],
             'عمر_البناء_سنوات': [age],
-            'طابق': [floor],
+            'طابق': [3],
             'يوجد_مصعد': [1 if elevator else 0],
             'يوجد_موقف': [1 if parking else 0],
             'يوجد_حديقة': [1 if garden else 0],
@@ -610,143 +623,106 @@ with col2:
         })
 
         predicted_price = model.predict(input_data)[0]
-
-        # عرض النتيجة
-        st.markdown("<div class='result-card'>", unsafe_allow_html=True)
-        st.markdown("<div class='result-icon'>💰</div>", unsafe_allow_html=True)
-
-        if is_arabic:
-            st.markdown("<div class='result-text'>السعر المتوقع</div>", unsafe_allow_html=True)
-            st.markdown(f"<div class='result-price'>{predicted_price:,.0f} دينار</div>", unsafe_allow_html=True)
-        else:
-            st.markdown("<div class='result-text'>Estimated Price</div>", unsafe_allow_html=True)
-            st.markdown(f"<div class='result-price'>{predicted_price:,.0f} JOD</div>", unsafe_allow_html=True)
-
-        st.markdown("</div>", unsafe_allow_html=True)
-
-        # رسم بياني
-        st.markdown("<div class='custom-card'>", unsafe_allow_html=True)
-
-        if is_arabic:
-            st.markdown("<div class='card-header'>📊 المقارنة</div>", unsafe_allow_html=True)
-        else:
-            st.markdown("<div class='card-header'>📊 Comparison</div>", unsafe_allow_html=True)
-
-        # متوسط أسعار المنطقة
         region_avg = df[df['المنطقة'] == region_ar]['السعر_دينار'].mean()
+        diff_percent = ((predicted_price - region_avg) / region_avg) * 100
+
+        # Result Card
+        if diff_percent > 0:
+            trend_html = f"""
+                <div class='trend-container'>
+                    <div class='trend-content'>
+                        <span class='trend-icon trend-up'>↑</span>
+                        <p class='trend-text'>{abs(diff_percent):.1f}% {t['above']}</p>
+                    </div>
+                </div>
+            """
+        else:
+            trend_html = f"""
+                <div class='trend-container'>
+                    <div class='trend-content'>
+                        <span class='trend-icon trend-down'>↓</span>
+                        <p class='trend-text'>{abs(diff_percent):.1f}% {t['below']}</p>
+                    </div>
+                </div>
+            """
+
+        st.markdown(f"""
+            <div class='result-card'>
+                <div class='result-content'>
+                    <div class='result-badge'>{t['estimated']}</div>
+                    <div class='result-price'>{predicted_price:,.0f}</div>
+                    <div class='result-currency'>{t['currency']}</div>
+                    {trend_html}
+                </div>
+            </div>
+        """, unsafe_allow_html=True)
+
+        # Info Cards
+        st.markdown(f"""
+        <div class='info-grid'>
+            <div class='info-card-mini'>
+                <div class='label'>{t['price_sqm']}</div>
+                <div class='value'>{predicted_price / area:,.0f}</div>
+            </div>
+            <div class='info-card-mini'>
+                <div class='label'>{t['region_avg']}</div>
+                <div class='value'>{region_avg:,.0f}</div>
+            </div>
+        </div>
+        """, unsafe_allow_html=True)
+
+        # Chart
+        st.markdown(f"<div class='chart-section'><div class='chart-title'>{t['comparison']}</div>",
+                    unsafe_allow_html=True)
+
+        # Chart colors based on theme
+        bar_color = '#2a5298' if theme == 'light' else '#60a5fa'
+        avg_color = '#94a3b8' if theme == 'light' else '#475569'
+        grid_color = '#e2e8f0' if theme == 'light' else '#334155'
+        text_color = text_primary
 
         fig = go.Figure(data=[
             go.Bar(
-                x=[('سعرك' if is_arabic else 'Your Price'),
-                   ('المتوسط' if is_arabic else 'Average')],
+                x=[t['your_property'], t['regional_avg']],
                 y=[predicted_price, region_avg],
                 marker=dict(
-                    color=['#2a5298', '#1e3c72'],
-                    line=dict(color='white', width=2)
+                    color=[bar_color, avg_color],
+                    line=dict(color=bar_color, width=2)
                 ),
                 text=[f'{predicted_price:,.0f}', f'{region_avg:,.0f}'],
                 textposition='outside',
-                textfont=dict(size=16, color='#1e3c72', weight='bold')
+                textfont=dict(size=14, weight=700, color=text_color)
             )
         ])
 
         fig.update_layout(
             plot_bgcolor='rgba(0,0,0,0)',
             paper_bgcolor='rgba(0,0,0,0)',
-            font=dict(color='#4a5568', size=13),
-            height=320,
-            margin=dict(t=30, b=30, l=20, r=20),
-            yaxis=dict(showgrid=True, gridcolor='rgba(30, 60, 114, 0.1)', showticklabels=False),
-            xaxis=dict(showgrid=False, tickfont=dict(size=14, weight='bold'))
+            height=280,
+            margin=dict(t=40, b=30, l=20, r=20),
+            yaxis=dict(
+                showgrid=True,
+                gridcolor=grid_color,
+                showticklabels=True,
+                tickfont=dict(size=11, color=text_secondary)
+            ),
+            xaxis=dict(
+                showgrid=False,
+                tickfont=dict(size=12, weight=600, color=text_primary)
+            ),
+            font=dict(family='Inter, sans-serif')
         )
 
         st.plotly_chart(fig, use_container_width=True)
-
-        # معلومات إضافية
-        price_diff = predicted_price - region_avg
-        price_diff_percent = (price_diff / region_avg) * 100
-
-        if price_diff > 0:
-            color = "#48bb78"
-            icon = "📈"
-            text_ar = f"أعلى من المتوسط بنسبة {abs(price_diff_percent):.1f}%"
-            text_en = f"{abs(price_diff_percent):.1f}% above average"
-        else:
-            color = "#4299e1"
-            icon = "📉"
-            text_ar = f"أقل من المتوسط بنسبة {abs(price_diff_percent):.1f}%"
-            text_en = f"{abs(price_diff_percent):.1f}% below average"
-
-        st.markdown(f"""
-                <div style='background: {color}; color: white; padding: 1.2rem; 
-                            border-radius: 12px; text-align: center; font-weight: 600; 
-                            font-size: 1.05rem; margin-top: 1rem;'>
-                    {icon} {text_ar if is_arabic else text_en}
-                </div>
-                """, unsafe_allow_html=True)
-
         st.markdown("</div>", unsafe_allow_html=True)
     else:
-        # الحالة الأولية
-        st.markdown("<div class='custom-card empty-state'>", unsafe_allow_html=True)
-        st.markdown("<div class='empty-state-icon'>🏢</div>", unsafe_allow_html=True)
-
-        if is_arabic:
-            st.markdown("""
-                    <div style='font-size: 1.6rem; color: #1e3c72; font-weight: 700; 
-                                font-family: Cairo, Roboto; margin-bottom: 1rem;'>
-                        ابدأ بإدخال بيانات العقار
-                    </div>
-                    <div style='color: #718096; font-size: 1rem; line-height: 1.8;
-                                font-family: Cairo, Roboto;'>
-                        أدخل معلومات العقار من القائمة اليسرى<br>
-                        ثم اضغط على زر <strong>احسب السعر</strong>
-                    </div>
-                    """, unsafe_allow_html=True)
-        else:
-            st.markdown("""
-                    <div style='font-size: 1.6rem; color: #1e3c72; font-weight: 700; 
-                                font-family: Cairo, Roboto; margin-bottom: 1rem;'>
-                        Start Entering Property Data
-                    </div>
-                    <div style='color: #718096; font-size: 1rem; line-height: 1.8;
-                                font-family: Cairo, Roboto;'>
-                        Enter property details from the left panel<br>
-                        Then click <strong>Calculate Price</strong>
-                    </div>
-                    """, unsafe_allow_html=True)
-
-        st.markdown("</div>", unsafe_allow_html=True)
-# ═══════════════════════════════════════
-# قسم المميزات
-# ═══════════════════════════════════════
-st.markdown("<br>", unsafe_allow_html=True)
-
-col_f1, col_f2, col_f3 = st.columns(3)
-
-with col_f1:
-    st.markdown("""
-            <div class='feature-card'>
-                <div class='feature-icon'>🎯</div>
-                <div class='feature-title'>دقة عالية</div>
-                <div class='feature-text'>نموذج مدرب على بيانات واقعية</div>
+        st.markdown(f"""
+            <div class='result-card'>
+                <div class='result-content'>
+                    <div class='result-badge'>{t['ready']}</div>
+                    <div style='font-size: 4rem; margin: 2rem 0;'>🏢</div>
+                    <div class='result-currency' style='margin-bottom: 1rem;'>{t['enter_details']}</div>
+                    <div class='result-currency'>"{t['calculate']}"</div>
+                </div>
             </div>
-            """, unsafe_allow_html=True)
-
-with col_f2:
-    st.markdown("""
-            <div class='feature-card'>
-                <div class='feature-icon'>⚡</div>
-                <div class='feature-title'>نتائج فورية</div>
-                <div class='feature-text'>احصل على التقدير خلال ثوانٍ</div>
-            </div>
-            """, unsafe_allow_html=True)
-
-with col_f3:
-    st.markdown("""
-            <div class='feature-card'>
-                <div class='feature-icon'>🤖</div>
-                <div class='feature-title'>ذكاء اصطناعي</div>
-                <div class='feature-text'>تقنية متطورة ومتقدمة</div>
-            </div>
-            """, unsafe_allow_html=True)
+        """, unsafe_allow_html=True)
