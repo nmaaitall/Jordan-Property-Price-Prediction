@@ -338,34 +338,34 @@ if st.button("Start Prediction"):
     region_avg = df[df['المنطقة'] == region_ar]['السعر_دينار'].mean()
     diff_percent = ((predicted_price - region_avg) / region_avg) * 100
 
-    # Result
-    st.markdown("<div class='result-card'>", unsafe_allow_html=True)
-    st.markdown("<div class='result-label'>ESTIMATED PRICE</div>", unsafe_allow_html=True)
-    st.markdown(f"<div class='result-price'>{predicted_price:,.0f}</div>", unsafe_allow_html=True)
-    st.markdown("<div class='result-currency'>Jordanian Dinar</div>", unsafe_allow_html=True)
-
-    # Trend Box
+    # Result Card كاملة في st.markdown واحد
     if diff_percent > 0:
-        st.markdown(f"""
-        <div class='trend-box'>
-            <p class='trend-text'>
-                <span class='trend-up-icon'>↑</span> 
-                {abs(diff_percent):.1f}% above regional avg
-            </p>
-        </div>
-        """, unsafe_allow_html=True)
+        trend_html = f"""
+            <div class='trend-box'>
+                <p class='trend-text'>
+                    <span class='trend-up-icon'>↑</span> 
+                    {abs(diff_percent):.1f}% above regional avg
+                </p>
+            </div>
+            """
     else:
-        st.markdown(f"""
-        <div class='trend-box'>
-            <p class='trend-text'>
-                <span class='trend-down-icon'>↓</span> 
-                {abs(diff_percent):.1f}% below regional avg
-            </p>
+        trend_html = f"""
+            <div class='trend-box'>
+                <p class='trend-text'>
+                    <span class='trend-down-icon'>↓</span> 
+                    {abs(diff_percent):.1f}% below regional avg
+                </p>
+            </div>
+            """
+
+    st.markdown(f"""
+        <div class='result-card'>
+            <div class='result-label'>ESTIMATED PRICE</div>
+            <div class='result-price'>{predicted_price:,.0f}</div>
+            <div class='result-currency'>Jordanian Dinar</div>
+            {trend_html}
         </div>
         """, unsafe_allow_html=True)
-
-    st.markdown("</div>", unsafe_allow_html=True)
-
     # Chart
     st.markdown("<div class='chart-container'><div class='chart-title'>Price Comparison</div>", unsafe_allow_html=True)
 
