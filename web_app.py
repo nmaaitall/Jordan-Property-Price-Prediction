@@ -689,11 +689,25 @@ with col_right:
         region_avg = df[df['المنطقة'] == region_ar]['السعر_دينار'].mean()
         diff_percent = ((predicted_price - region_avg) / region_avg) * 100
 
-        # Result Card with proper HTML rendering
-        trend_direction = 'up' if diff_percent > 0 else 'down'
-        trend_icon = '↑' if diff_percent > 0 else '↓'
-        trend_color = '#10b981' if diff_percent > 0 else '#ef4444'
-        trend_text = t['above'] if diff_percent > 0 else t['below']
+        # Result Card
+        if diff_percent > 0:
+            trend_html = f"""
+                <div class='trend-container'>
+                    <div class='trend-content'>
+                        <span class='trend-icon trend-up'>↑</span>
+                        <p class='trend-text'>{abs(diff_percent):.1f}% {t['above']}</p>
+                    </div>
+                </div>
+            """
+        else:
+            trend_html = f"""
+                <div class='trend-container'>
+                    <div class='trend-content'>
+                        <span class='trend-icon trend-down'>↓</span>
+                        <p class='trend-text'>{abs(diff_percent):.1f}% {t['below']}</p>
+                    </div>
+                </div>
+            """
 
         st.markdown(f"""
             <div class='result-card'>
@@ -701,12 +715,7 @@ with col_right:
                     <div class='result-badge'>{t['estimated']}</div>
                     <div class='result-price'>{predicted_price:,.0f}</div>
                     <div class='result-currency'>{t['currency']}</div>
-                    <div class='trend-container'>
-                        <div class='trend-content'>
-                            <span class='trend-icon' style='color: {trend_color};'>{trend_icon}</span>
-                            <p class='trend-text'>{abs(diff_percent):.1f}% {trend_text}</p>
-                        </div>
-                    </div>
+                    {trend_html}
                 </div>
             </div>
         """, unsafe_allow_html=True)
