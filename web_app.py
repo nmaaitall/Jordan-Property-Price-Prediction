@@ -86,9 +86,9 @@ st.markdown("""
         border-bottom: 3px solid #007BFF;
     }
 
-    /* بطاقة النتيجة */
+    /* بطاقة النتيجة - ألوان محسنة للوضوح */
     .result-card {
-        background: linear-gradient(135deg, #007BFF 0%, #0056B3 100%);
+        background: linear-gradient(135deg, #0056B3 0%, #003d82 100%);
         border-radius: 16px;
         padding: 2.5rem;
         text-align: center;
@@ -98,12 +98,12 @@ st.markdown("""
 
     .result-text {
         color: #FFFFFF;
-        font-size: 0.95rem;
+        font-size: 1rem;
         font-weight: 600;
         margin-bottom: 0.8rem;
         text-transform: uppercase;
         letter-spacing: 2px;
-        opacity: 0.95;
+        opacity: 1;
     }
 
     .result-price {
@@ -111,14 +111,14 @@ st.markdown("""
         font-size: 3.2rem;
         font-weight: 800;
         margin: 0.5rem 0;
-        text-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        text-shadow: 0 2px 10px rgba(0,0,0,0.3);
     }
 
     .result-currency {
         color: #FFFFFF;
         font-size: 1.1rem;
         font-weight: 600;
-        opacity: 0.9;
+        opacity: 1;
     }
 
     /* الأزرار */
@@ -150,23 +150,24 @@ st.markdown("""
         margin-bottom: 0.5rem !important;
     }
 
-    /* Selectbox */
+    /* Selectbox - تحسين الوضوح */
     div[data-baseweb="select"] {
-        background: #FFFFFF !important;
+        background: #F8F9FA !important;
         border-radius: 12px !important;
-        border: 2px solid #DEE2E6 !important;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.06) !important;
+        border: 2px solid #007BFF !important;
+        box-shadow: 0 2px 8px rgba(0,123,255,0.15) !important;
     }
 
     div[data-baseweb="select"]:hover {
-        border-color: #007BFF !important;
+        border-color: #0056B3 !important;
+        background: #FFFFFF !important;
     }
 
     div[data-baseweb="select"] > div {
         padding: 0.7rem 1rem !important;
         font-size: 1rem !important;
         color: #212529 !important;
-        font-weight: 600 !important;
+        font-weight: 700 !important;
     }
 
     /* Number Input */
@@ -198,22 +199,25 @@ st.markdown("""
         color: white !important;
     }
 
-    /* Slider */
+    /* Slider - تحسين الوضوح */
     .stSlider {
         padding: 1.5rem 0.5rem !important;
+        background: #F8F9FA;
+        border-radius: 12px;
+        border: 2px solid #007BFF;
     }
 
     .stSlider > div > div > div > div {
         background: #007BFF !important;
-        height: 6px !important;
+        height: 8px !important;
     }
 
     .stSlider > div > div > div > div > div {
         background: white !important;
-        border: 4px solid #007BFF !important;
-        box-shadow: 0 2px 8px rgba(0, 123, 255, 0.3) !important;
-        width: 24px !important;
-        height: 24px !important;
+        border: 5px solid #007BFF !important;
+        box-shadow: 0 3px 10px rgba(0, 123, 255, 0.4) !important;
+        width: 28px !important;
+        height: 28px !important;
     }
 
     /* Checkboxes */
