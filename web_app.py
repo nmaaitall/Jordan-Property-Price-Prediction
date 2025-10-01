@@ -88,7 +88,7 @@ with st.sidebar:
     lang = st.radio(
         "🌐 Language / اللغة",
         options=['en', 'ar'],
-        format_func=lambda x: '🇬🇧 English' if x == 'en' else '🇯🇴 العربية',
+        format_func=lambda x: 'English' if x == 'en' else 'العربية',
         key='language',
         horizontal=True
     )
@@ -96,15 +96,10 @@ with st.sidebar:
     theme = st.radio(
         "🎨 Theme / المظهر",
         options=['light', 'dark'],
-        format_func=lambda x: '☀️ Light / فاتح' if x == 'light' else '🌙 Dark / داكن',
+        format_func=lambda x: 'Light' if x == 'light' else 'Dark',
         key='theme',
         horizontal=True
     )
-
-    st.markdown("---")
-    st.markdown(f"**Current Settings:**")
-    st.markdown(f"- Language: {'English' if lang == 'en' else 'العربية'}")
-    st.markdown(f"- Theme: {'Light' if theme == 'light' else 'Dark'}")
 
 t = translations[lang]
 
@@ -589,26 +584,44 @@ def load_model():
 
 model, le, regions_ar, regions_en, df = load_model()
 
-# Header with Settings Button
-header_col1, header_col2 = st.columns([10, 1])
-
-with header_col1:
+# Settings Header (Above main content)
+settings_container = st.container()
+with settings_container:
     st.markdown(f"""
-    <div class='header-container'>
-        <div class='logo-container'>
-            <div class='logo-text'>
-                <span class='logo-icon'>🏢</span>{t['title']}
+    <div style='background: {card_bg}; padding: 1rem 1.5rem; border-radius: 12px; margin-bottom: 1.5rem; 
+                border: 2px solid {border_color}; display: flex; justify-content: space-between; align-items: center;'>
+        <div style='display: flex; gap: 2rem; align-items: center;'>
+            <div>
+                <span style='font-size: 1.1rem; color: {text_secondary}; font-weight: 600;'>🌐 Language:</span>
+                <span style='font-size: 1.1rem; color: {text_primary}; font-weight: 700; margin-left: 0.5rem;'>
+                    {'English' if lang == 'en' else 'العربية'}
+                </span>
             </div>
-            <div class='tagline'>{t['subtitle']}</div>
-            <div class='subtitle'>{t['powered']}</div>
+            <div>
+                <span style='font-size: 1.1rem; color: {text_secondary}; font-weight: 600;'>🎨 Theme:</span>
+                <span style='font-size: 1.1rem; color: {text_primary}; font-weight: 700; margin-left: 0.5rem;'>
+                    {'Light' if theme == 'light' else 'Dark'}
+                </span>
+            </div>
+        </div>
+        <div style='font-size: 0.9rem; color: {text_secondary};'>
+            ⚙️ Change in Sidebar
         </div>
     </div>
     """, unsafe_allow_html=True)
 
-with header_col2:
-    st.markdown("<br><br>", unsafe_allow_html=True)
-    if st.button("⚙️", help="Settings / الإعدادات"):
-        st.sidebar.info("👈 Settings are in the sidebar / الإعدادات في القائمة الجانبية")
+# Header
+st.markdown(f"""
+<div class='header-container'>
+    <div class='logo-container'>
+        <div class='logo-text'>
+            <span class='logo-icon'>🏢</span>{t['title']}
+        </div>
+        <div class='tagline'>{t['subtitle']}</div>
+        <div class='subtitle'>{t['powered']}</div>
+    </div>
+</div>
+""", unsafe_allow_html=True)
 
 # Main Layout
 col_left, col_right = st.columns([1.2, 1], gap="large")
@@ -676,25 +689,11 @@ with col_right:
         region_avg = df[df['المنطقة'] == region_ar]['السعر_دينار'].mean()
         diff_percent = ((predicted_price - region_avg) / region_avg) * 100
 
-        # Result Card
-        if diff_percent > 0:
-            trend_html = f"""
-                <div class='trend-container'>
-                    <div class='trend-content'>
-                        <span class='trend-icon trend-up'>↑</span>
-                        <p class='trend-text'>{abs(diff_percent):.1f}% {t['above']}</p>
-                    </div>
-                </div>
-            """
-        else:
-            trend_html = f"""
-                <div class='trend-container'>
-                    <div class='trend-content'>
-                        <span class='trend-icon trend-down'>↓</span>
-                        <p class='trend-text'>{abs(diff_percent):.1f}% {t['below']}</p>
-                    </div>
-                </div>
-            """
+        # Result Card with proper HTML rendering
+        trend_direction = 'up' if diff_percent > 0 else 'down'
+        trend_icon = '↑' if diff_percent > 0 else '↓'
+        trend_color = '#10b981' if diff_percent > 0 else '#ef4444'
+        trend_text = t['above'] if diff_percent > 0 else t['below']
 
         st.markdown(f"""
             <div class='result-card'>
@@ -702,7 +701,12 @@ with col_right:
                     <div class='result-badge'>{t['estimated']}</div>
                     <div class='result-price'>{predicted_price:,.0f}</div>
                     <div class='result-currency'>{t['currency']}</div>
-                    {trend_html}
+                    <div class='trend-container'>
+                        <div class='trend-content'>
+                            <span class='trend-icon' style='color: {trend_color};'>{trend_icon}</span>
+                            <p class='trend-text'>{abs(diff_percent):.1f}% {trend_text}</p>
+                        </div>
+                    </div>
                 </div>
             </div>
         """, unsafe_allow_html=True)
