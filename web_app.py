@@ -408,34 +408,34 @@ if st.button("Start Prediction"):
     diff_percent = ((predicted_price - region_avg) / region_avg) * 100
 
     # عرض النتيجة
-    if diff_percent > 0:
-        trend_html = f"""
-        <div class='trend-box'>
-            <p class='trend-text'>
-                <span class='trend-up-icon'>↑</span> 
-                {abs(diff_percent):.1f}% above regional avg
-            </p>
-        </div>
-        """
-    else:
-        trend_html = f"""
-        <div class='trend-box'>
-            <p class='trend-text'>
-                <span class='trend-down-icon'>↓</span> 
-                {abs(diff_percent):.1f}% below regional avg
-            </p>
-        </div>
-        """
-
+    # عرض النتيجة - بدون الـ trend داخل البوكس
     st.markdown(f"""
-    <div class='result-card'>
-        <div class='result-label'>ESTIMATED PRICE</div>
-        <div class='result-price'>{predicted_price:,.0f}</div>
-        <div class='result-currency'>Jordanian Dinar</div>
-        {trend_html}
-    </div>
-    """, unsafe_allow_html=True)
+        <div class='result-card'>
+            <div class='result-label'>ESTIMATED PRICE</div>
+            <div class='result-price'>{predicted_price:,.0f}</div>
+            <div class='result-currency'>Jordanian Dinar</div>
+        </div>
+        """, unsafe_allow_html=True)
 
+    # الـ trend خارج البوكس الأزرق
+    if diff_percent > 0:
+        st.markdown(f"""
+            <div style='text-align: center; margin-top: 1rem;'>
+                <span style='color: #28A745; font-size: 1.3rem; font-weight: 800;'>↑</span>
+                <span style='color: #212529; font-size: 1.1rem; font-weight: 700;'>
+                    {abs(diff_percent):.1f}% above regional avg
+                </span>
+            </div>
+            """, unsafe_allow_html=True)
+    else:
+        st.markdown(f"""
+            <div style='text-align: center; margin-top: 1rem;'>
+                <span style='color: #DC3545; font-size: 1.3rem; font-weight: 800;'>↓</span>
+                <span style='color: #212529; font-size: 1.1rem; font-weight: 700;'>
+                    {abs(diff_percent):.1f}% below regional avg
+                </span>
+            </div>
+            """, unsafe_allow_html=True)
     # الرسم البياني
     st.markdown("<div class='chart-container'><div class='chart-title'>Price Comparison</div>", unsafe_allow_html=True)
 
