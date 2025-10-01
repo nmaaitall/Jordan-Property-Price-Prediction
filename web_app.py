@@ -170,17 +170,38 @@ st.markdown("""
 
     /* Selectbox */
     div[data-baseweb="select"] {
-        background: #F8F9FA !important;
+        background: #FFFFFF !important;
         border-radius: 12px !important;
         border: 2px solid #007BFF !important;
         margin-bottom: 1rem !important;
     }
-
+    
     div[data-baseweb="select"] > div {
         padding: 0.8rem 1rem !important;
         font-size: 1rem !important;
         font-weight: 700 !important;
         color: #212529 !important;
+        background: #FFFFFF !important;
+    }
+    
+    /* النص المختار في القائمة المنسدلة */
+    div[data-baseweb="select"] div[aria-selected="true"] {
+        background: #007BFF !important;
+        color: #FFFFFF !important;
+    }
+    
+    /* القائمة المنسدلة نفسها */
+    ul[role="listbox"] {
+        background: #FFFFFF !important;
+    }
+    
+    ul[role="listbox"] li {
+        color: #212529 !important;
+        padding: 0.8rem 1rem !important;
+    }
+    
+    ul[role="listbox"] li:hover {
+        background: #E7F3FF !important;
     }
 
     /* Number Input */
