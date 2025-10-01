@@ -85,19 +85,26 @@ translations = {
 with st.sidebar:
     st.markdown("### ⚙️ Settings / الإعدادات")
 
-    lang = st.selectbox(
+    lang = st.radio(
         "🌐 Language / اللغة",
         options=['en', 'ar'],
-        format_func=lambda x: 'English' if x == 'en' else 'العربية',
-        key='language'
+        format_func=lambda x: '🇬🇧 English' if x == 'en' else '🇯🇴 العربية',
+        key='language',
+        horizontal=True
     )
 
-    theme = st.selectbox(
-        f"🎨 Theme / المظهر",
+    theme = st.radio(
+        "🎨 Theme / المظهر",
         options=['light', 'dark'],
-        format_func=lambda x: 'Light / فاتح' if x == 'light' else 'Dark / داكن',
-        key='theme'
+        format_func=lambda x: '☀️ Light / فاتح' if x == 'light' else '🌙 Dark / داكن',
+        key='theme',
+        horizontal=True
     )
+
+    st.markdown("---")
+    st.markdown(f"**Current Settings:**")
+    st.markdown(f"- Language: {'English' if lang == 'en' else 'العربية'}")
+    st.markdown(f"- Theme: {'Light' if theme == 'light' else 'Dark'}")
 
 t = translations[lang]
 
@@ -137,10 +144,45 @@ st.markdown(f"""
 
     section[data-testid="stSidebar"] .stMarkdown h3 {{
         color: {text_primary} !important;
+        font-size: 1.2rem !important;
+    }}
+
+    section[data-testid="stSidebar"] .stMarkdown p {{
+        color: {text_secondary} !important;
+    }}
+
+    section[data-testid="stSidebar"] .stMarkdown strong {{
+        color: {text_primary} !important;
     }}
 
     section[data-testid="stSidebar"] label {{
         color: {text_secondary} !important;
+        font-weight: 700 !important;
+        font-size: 1rem !important;
+    }}
+
+    section[data-testid="stSidebar"] .stRadio > label {{
+        color: {text_primary} !important;
+    }}
+
+    section[data-testid="stSidebar"] div[role="radiogroup"] label {{
+        background: {input_bg} !important;
+        padding: 0.75rem 1rem !important;
+        border-radius: 8px !important;
+        border: 2px solid {input_border} !important;
+        margin: 0.25rem 0 !important;
+        transition: all 0.3s ease !important;
+    }}
+
+    section[data-testid="stSidebar"] div[role="radiogroup"] label:hover {{
+        border-color: #2a5298 !important;
+        background: {hover_bg} !important;
+    }}
+
+    section[data-testid="stSidebar"] div[role="radiogroup"] label[data-checked="true"] {{
+        background: #2a5298 !important;
+        color: white !important;
+        border-color: #2a5298 !important;
     }}
 
     .main .block-container {{
@@ -547,18 +589,26 @@ def load_model():
 
 model, le, regions_ar, regions_en, df = load_model()
 
-# Header
-st.markdown(f"""
-<div class='header-container'>
-    <div class='logo-container'>
-        <div class='logo-text'>
-            <span class='logo-icon'>🏢</span>{t['title']}
+# Header with Settings Button
+header_col1, header_col2 = st.columns([10, 1])
+
+with header_col1:
+    st.markdown(f"""
+    <div class='header-container'>
+        <div class='logo-container'>
+            <div class='logo-text'>
+                <span class='logo-icon'>🏢</span>{t['title']}
+            </div>
+            <div class='tagline'>{t['subtitle']}</div>
+            <div class='subtitle'>{t['powered']}</div>
         </div>
-        <div class='tagline'>{t['subtitle']}</div>
-        <div class='subtitle'>{t['powered']}</div>
     </div>
-</div>
-""", unsafe_allow_html=True)
+    """, unsafe_allow_html=True)
+
+with header_col2:
+    st.markdown("<br><br>", unsafe_allow_html=True)
+    if st.button("⚙️", help="Settings / الإعدادات"):
+        st.sidebar.info("👈 Settings are in the sidebar / الإعدادات في القائمة الجانبية")
 
 # Main Layout
 col_left, col_right = st.columns([1.2, 1], gap="large")
