@@ -33,21 +33,8 @@ st.markdown("""
 
     /* الخلفية */
     .stApp {
-        background: linear-gradient(to bottom, #0f2027, #203a43, #2c5364);
+        background: linear-gradient(135deg, #1a1f3a 0%, #2d3561 50%, #1a1f3a 100%);
         min-height: 100vh;
-    }
-
-    /* إصلاح البوكسات البيضاء */
-    div[data-testid="column"] > div {
-        background: transparent !important;
-    }
-
-    div[data-baseweb="select"] > div {
-        background: #f8fafc !important;
-    }
-
-    div[data-baseweb="input"] > div {
-        background: #f8fafc !important;
     }
 
     /* Container رئيسي */
@@ -56,20 +43,29 @@ st.markdown("""
         max-width: 1400px;
     }
 
+    /* إزالة الخلفيات البيضاء المزعجة */
+    div[data-testid="column"] > div:first-child {
+        background: transparent !important;
+    }
+
+    div[data-testid="stVerticalBlock"] > div {
+        background: transparent !important;
+    }
+
     /* العنوان الرئيسي */
     .main-title {
         text-align: center;
         color: #ffffff;
         font-size: 2.8rem;
         font-weight: 800;
-        margin-bottom: 0.3rem;
+        margin-bottom: 0.5rem;
         letter-spacing: -0.5px;
-        text-shadow: 0 2px 10px rgba(0,0,0,0.3);
+        text-shadow: 0 2px 15px rgba(0,0,0,0.4);
     }
 
     .subtitle {
         text-align: center;
-        color: #b8c5d0;
+        color: #a8b4c9;
         font-size: 1.1rem;
         margin-bottom: 2.5rem;
         font-weight: 400;
@@ -77,54 +73,58 @@ st.markdown("""
 
     /* البطاقات */
     .custom-card {
-        background: #ffffff;
-        border-radius: 16px;
+        background: linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(245,247,250,0.95) 100%);
+        border-radius: 20px;
         padding: 2rem;
-        box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+        box-shadow: 0 8px 32px rgba(0,0,0,0.25);
         margin-bottom: 1.5rem;
-        border: 1px solid #e8edf2;
+        border: 1px solid rgba(255,255,255,0.3);
+        backdrop-filter: blur(10px);
     }
 
     /* عناوين البطاقات */
     .card-header {
-        font-size: 1.4rem;
+        font-size: 1.5rem;
         font-weight: 700;
         color: #1a365d;
         margin-bottom: 1.5rem;
         padding-bottom: 0.8rem;
-        border-bottom: 2px solid #e8edf2;
+        border-bottom: 3px solid #3b82f6;
+        display: inline-block;
     }
 
     /* بطاقة النتيجة */
     .result-card {
-        background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
-        border-radius: 16px;
+        background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+        border-radius: 20px;
         padding: 2.5rem;
         text-align: center;
-        box-shadow: 0 8px 30px rgba(30, 60, 114, 0.3);
-        border: 1px solid rgba(255,255,255,0.1);
+        box-shadow: 0 8px 32px rgba(59, 130, 246, 0.4);
+        border: 1px solid rgba(255,255,255,0.2);
+        margin-top: 1.5rem;
     }
 
     .result-text {
-        color: #b8c5d0;
-        font-size: 1.1rem;
+        color: #dbeafe;
+        font-size: 1rem;
         font-weight: 600;
-        margin-bottom: 1rem;
+        margin-bottom: 0.8rem;
         text-transform: uppercase;
-        letter-spacing: 1px;
+        letter-spacing: 2px;
     }
 
     .result-price {
         color: #ffffff;
-        font-size: 3.2rem;
+        font-size: 3rem;
         font-weight: 800;
         letter-spacing: -1px;
-        text-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        text-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        margin: 0.5rem 0;
     }
 
     .result-currency {
-        color: #b8c5d0;
-        font-size: 1.3rem;
+        color: #dbeafe;
+        font-size: 1.1rem;
         font-weight: 600;
         margin-top: 0.5rem;
     }
@@ -132,158 +132,220 @@ st.markdown("""
     /* الأزرار */
     .stButton>button {
         width: 100%;
-        background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+        background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
         color: white;
-        font-size: 1.15rem;
+        font-size: 1.2rem;
         font-weight: 700;
-        padding: 0.9rem 2rem;
-        border-radius: 12px;
+        padding: 1rem 2rem;
+        border-radius: 15px;
         border: none;
-        box-shadow: 0 4px 15px rgba(30, 60, 114, 0.3);
+        box-shadow: 0 6px 20px rgba(59, 130, 246, 0.4);
         transition: all 0.3s ease;
-        margin-top: 1rem;
-        letter-spacing: 0.3px;
+        margin-top: 1.5rem;
+        letter-spacing: 0.5px;
     }
 
     .stButton>button:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 6px 20px rgba(30, 60, 114, 0.4);
-        background: linear-gradient(135deg, #2a5298 0%, #1e3c72 100%);
+        transform: translateY(-3px);
+        box-shadow: 0 8px 25px rgba(59, 130, 246, 0.6);
+        background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
     }
 
-    /* Inputs */
-    .stSelectbox label, .stNumberInput label, .stSlider label {
-        font-weight: 600 !important;
-        color: #2d3748 !important;
-        font-size: 0.95rem !important;
-        margin-bottom: 0.3rem !important;
-    }
-
-    .stSelectbox > div > div, .stNumberInput > div > div > input {
-        border-radius: 10px !important;
-        border: 1.5px solid #e2e8f0 !important;
-        background: #f8fafc !important;
+    /* تحسين Labels */
+    label {
+        font-weight: 700 !important;
+        color: #1e293b !important;
         font-size: 1rem !important;
-        padding: 0.6rem 0.8rem !important;
+        margin-bottom: 0.5rem !important;
+        display: block !important;
     }
 
-    .stSelectbox > div > div:focus, .stNumberInput > div > div > input:focus {
-        border-color: #2a5298 !important;
-        box-shadow: 0 0 0 2px rgba(42, 82, 152, 0.1) !important;
+    /* تحسين Selectbox */
+    div[data-baseweb="select"] {
+        background: white !important;
+        border-radius: 12px !important;
+        border: 2px solid #e2e8f0 !important;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.05) !important;
     }
 
-    /* Checkboxes */
+    div[data-baseweb="select"]:hover {
+        border-color: #3b82f6 !important;
+    }
+
+    div[data-baseweb="select"] > div {
+        padding: 0.7rem 1rem !important;
+        font-size: 1rem !important;
+        color: #1e293b !important;
+        font-weight: 600 !important;
+    }
+
+    /* تحسين Number Input */
+    .stNumberInput > div > div > input {
+        background: white !important;
+        border: 2px solid #e2e8f0 !important;
+        border-radius: 12px !important;
+        padding: 0.7rem 1rem !important;
+        font-size: 1rem !important;
+        color: #1e293b !important;
+        font-weight: 600 !important;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.05) !important;
+    }
+
+    .stNumberInput > div > div > input:focus {
+        border-color: #3b82f6 !important;
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1) !important;
+    }
+
+    /* أزرار Number Input */
+    .stNumberInput button {
+        background: #f1f5f9 !important;
+        color: #475569 !important;
+        border: 1px solid #e2e8f0 !important;
+        border-radius: 8px !important;
+        width: 35px !important;
+        height: 35px !important;
+    }
+
+    .stNumberInput button:hover {
+        background: #3b82f6 !important;
+        color: white !important;
+        border-color: #3b82f6 !important;
+    }
+
+    /* تحسين Slider */
+    .stSlider {
+        padding: 1rem 0.5rem !important;
+    }
+
+    .stSlider > div > div > div > div {
+        background: #3b82f6 !important;
+    }
+
+    .stSlider > div > div > div > div > div {
+        background: white !important;
+        border: 3px solid #3b82f6 !important;
+        box-shadow: 0 2px 8px rgba(59, 130, 246, 0.3) !important;
+    }
+
+    /* تحسين Checkboxes */
     .stCheckbox {
-        background: #f8fafc;
-        padding: 0.8rem 1rem;
-        border-radius: 10px;
-        margin-bottom: 0.6rem;
-        border: 1.5px solid #e8edf2;
+        background: white;
+        padding: 1rem 1.2rem;
+        border-radius: 12px;
+        margin-bottom: 0.8rem;
+        border: 2px solid #e2e8f0;
         transition: all 0.2s ease;
     }
 
     .stCheckbox:hover {
-        background: #edf2f7;
-        border-color: #cbd5e0;
+        background: #f8fafc;
+        border-color: #3b82f6;
+        transform: translateX(-2px);
     }
 
     .stCheckbox label {
         font-weight: 600 !important;
-        color: #2d3748 !important;
+        color: #1e293b !important;
         font-size: 0.95rem !important;
     }
 
-    /* Slider */
-    .stSlider > div > div > div {
-        background: #2a5298 !important;
+    .stCheckbox input[type="checkbox"]:checked ~ label {
+        color: #3b82f6 !important;
     }
 
     /* Sidebar */
     [data-testid="stSidebar"] {
-        background: linear-gradient(to bottom, #ffffff, #f8fafc);
-        border-right: 1px solid #e8edf2;
+        background: linear-gradient(to bottom, #f8fafc, #e2e8f0);
+        border-right: 1px solid #cbd5e1;
     }
 
     [data-testid="stSidebar"] .element-container {
-        padding: 0.5rem 0;
+        padding: 0.3rem 0;
     }
 
     /* Info Box */
     .info-box {
-        background: linear-gradient(135deg, #edf2f7, #e6f3ff);
+        background: linear-gradient(135deg, #dbeafe, #bfdbfe);
         padding: 1.2rem;
         border-radius: 12px;
-        border-left: 4px solid #2a5298;
+        border-left: 4px solid #3b82f6;
         margin: 1rem 0;
-        color: #2d3748;
+        color: #1e293b;
         font-size: 0.9rem;
         line-height: 1.6;
     }
 
     .info-box strong {
-        color: #1a365d;
+        color: #1e3a8a;
         display: block;
         margin-bottom: 0.3rem;
+        font-size: 1rem;
     }
 
     /* Stats Cards */
     [data-testid="stMetricValue"] {
         font-size: 1.8rem !important;
-        font-weight: 700 !important;
-        color: #1a365d !important;
+        font-weight: 800 !important;
+        color: #1e3a8a !important;
     }
 
     [data-testid="stMetricLabel"] {
         font-size: 0.9rem !important;
-        color: #4a5568 !important;
+        color: #475569 !important;
         font-weight: 600 !important;
     }
 
     /* Initial State */
     .initial-state {
-        background: linear-gradient(135deg, #f8fafc, #edf2f7);
-        border-radius: 16px;
+        background: linear-gradient(135deg, rgba(255,255,255,0.95), rgba(248,250,252,0.95));
+        border-radius: 20px;
         padding: 3rem 2rem;
         text-align: center;
-        border: 2px dashed #cbd5e0;
+        border: 2px dashed #cbd5e1;
+        margin-top: 1.5rem;
     }
 
     .initial-state-icon {
         font-size: 4rem;
         margin-bottom: 1rem;
-        opacity: 0.6;
+        opacity: 0.4;
     }
 
     .initial-state-title {
-        font-size: 1.3rem;
-        color: #2d3748;
+        font-size: 1.4rem;
+        color: #1e293b;
         font-weight: 700;
         margin-bottom: 0.5rem;
     }
 
     .initial-state-desc {
-        color: #718096;
+        color: #64748b;
         font-size: 1rem;
     }
 
     /* Radio Buttons */
     .stRadio > div {
-        background: #f8fafc;
-        padding: 0.8rem;
-        border-radius: 10px;
-        border: 1.5px solid #e8edf2;
+        background: white;
+        padding: 1rem;
+        border-radius: 12px;
+        border: 2px solid #e2e8f0;
     }
 
     .stRadio label {
         font-weight: 600 !important;
-        color: #2d3748 !important;
+        color: #1e293b !important;
     }
 
     /* Divider */
     hr {
         margin: 1.5rem 0;
         border: none;
-        border-top: 1px solid #e8edf2;
+        border-top: 2px solid #e2e8f0;
+    }
+
+    /* تحسين العرض */
+    .row-widget {
+        margin-bottom: 1.2rem;
     }
 </style>
 """, unsafe_allow_html=True)
@@ -379,7 +441,7 @@ else:
 # ═══════════════════════════════════════
 # Layout رئيسي
 # ═══════════════════════════════════════
-col1, col2 = st.columns([1.3, 1])
+col1, col2 = st.columns([1.4, 1], gap="large")
 
 # ═══════════════════════════════════════
 # العمود الأيسر - المدخلات
@@ -402,8 +464,10 @@ with col1:
         region = st.selectbox("Region", region_options, index=0)
         region_ar = [k for k, v in regions_en.items() if v == region][0]
 
+    st.markdown("<br>", unsafe_allow_html=True)
+
     # صف المساحة والغرف
-    col_a, col_b = st.columns(2)
+    col_a, col_b = st.columns(2, gap="medium")
     with col_a:
         area = st.number_input("المساحة (متر مربع)" if is_arabic else "Area (sqm)",
                                min_value=50, max_value=1000, value=150, step=10)
@@ -412,7 +476,7 @@ with col1:
                                 min_value=1, max_value=10, value=3, step=1)
 
     # صف الحمامات والعمر
-    col_c, col_d = st.columns(2)
+    col_c, col_d = st.columns(2, gap="medium")
     with col_c:
         bathrooms = st.number_input("عدد الحمامات" if is_arabic else "Number of Bathrooms",
                                     min_value=1, max_value=5, value=2, step=1)
@@ -420,14 +484,19 @@ with col1:
         age = st.number_input("عمر البناء (سنة)" if is_arabic else "Building Age (years)",
                               min_value=0, max_value=100, value=5, step=1)
 
-    # صف الطابق والخدمات
-    col_e, col_f = st.columns(2)
+    # صف الطابق
+    col_e, col_f = st.columns(2, gap="medium")
     with col_e:
         floor = st.number_input("رقم الطابق" if is_arabic else "Floor Number",
                                 min_value=0, max_value=20, value=3, step=1)
     with col_f:
-        services = st.slider("قرب الخدمات (1-10)" if is_arabic else "Proximity to Services (1-10)",
-                             1, 10, 7)
+        st.markdown("<br>", unsafe_allow_html=True)
+
+    st.markdown("<br>", unsafe_allow_html=True)
+
+    # Slider للخدمات
+    services = st.slider("قرب الخدمات (1-10)" if is_arabic else "Proximity to Services (1-10)",
+                         1, 10, 7)
 
     st.markdown("</div>", unsafe_allow_html=True)
 
@@ -439,7 +508,7 @@ with col1:
     else:
         st.markdown("<div class='card-header'>Features & Amenities</div>", unsafe_allow_html=True)
 
-    col_g, col_h = st.columns(2)
+    col_g, col_h = st.columns(2, gap="medium")
     with col_g:
         elevator = st.checkbox("يوجد مصعد" if is_arabic else "Elevator Available", value=True)
         garden = st.checkbox("يوجد حديقة" if is_arabic else "Garden Available", value=False)
@@ -509,22 +578,22 @@ with col2:
                 x=[('السعر المتوقع' if is_arabic else 'Estimated Price'),
                    ('متوسط المنطقة' if is_arabic else 'Region Average')],
                 y=[predicted_price, region_avg],
-                marker_color=['#2a5298', '#4a90e2'],
+                marker_color=['#3b82f6', '#60a5fa'],
                 text=[f'{predicted_price:,.0f}', f'{region_avg:,.0f}'],
                 textposition='outside',
-                textfont=dict(size=13, color='#2d3748', family='Cairo', weight=700)
+                textfont=dict(size=14, color='#1e293b', family='Cairo', weight=700)
             )
         ])
 
         fig.update_layout(
-            plot_bgcolor='rgba(0,0,0,0)',
-            paper_bgcolor='rgba(0,0,0,0)',
-            font=dict(color='#2d3748', size=11, family='Cairo'),
-            height=280,
-            margin=dict(t=30, b=20, l=20, r=20),
-            yaxis=dict(showgrid=True, gridcolor='#e8edf2', showticklabels=True,
-                       tickfont=dict(size=10, color='#718096')),
-            xaxis=dict(showgrid=False, tickfont=dict(size=11, color='#2d3748', weight=600))
+            plot_bgcolor='rgba(255,255,255,0)',
+            paper_bgcolor='rgba(255,255,255,0)',
+            font=dict(color='#1e293b', size=12, family='Cairo'),
+            height=300,
+            margin=dict(t=40, b=30, l=20, r=20),
+            yaxis=dict(showgrid=True, gridcolor='#f1f5f9', showticklabels=True,
+                       tickfont=dict(size=11, color='#64748b')),
+            xaxis=dict(showgrid=False, tickfont=dict(size=12, color='#1e293b', weight=600))
         )
 
         st.plotly_chart(fig, use_container_width=True)
@@ -551,9 +620,10 @@ with col2:
 # ═══════════════════════════════════════
 # Footer
 # ═══════════════════════════════════════
-st.markdown("<br>", unsafe_allow_html=True)
+st.markdown("<br><br>", unsafe_allow_html=True)
 st.markdown("""
-<div style='text-align: center; color: #b8c5d0; font-size: 0.85rem; padding: 1rem 0;'>
-    Powered by Machine Learning Technology
+<div style='text-align: center; color: #a8b4c9; font-size: 0.9rem; padding: 1.5rem 0; border-top: 1px solid rgba(168, 180, 201, 0.2); margin-top: 2rem;'>
+    <div style='margin-bottom: 0.5rem;'>Powered by Machine Learning Technology</div>
+    <div style='font-size: 0.85rem; opacity: 0.8;'>© 2024 NOUR MAAITA - All Rights Reserved</div>
 </div>
 """, unsafe_allow_html=True)
