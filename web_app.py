@@ -6,8 +6,8 @@ import plotly.graph_objects as go
 
 # إعدادات الصفحة
 st.set_page_config(
-    page_title="Jordan Property Price Predictor",
-    page_icon="🏛️",
+    page_title="RealPredict - Jordan Property Price Predictor",
+    page_icon="🏠",
     layout="wide",
     initial_sidebar_state="expanded"
 )
@@ -15,7 +15,7 @@ st.set_page_config(
 # Custom CSS
 st.markdown("""
 <style>
-    @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&family=Poppins:wght@600;700;800&display=swap');
 
     #MainMenu {visibility: hidden;}
     footer {visibility: hidden;}
@@ -35,35 +35,48 @@ st.markdown("""
         max-width: 1500px;
     }
 
-    /* العنوان الرئيسي - نص أسود */
-    .main-title {
+    /* Logo والعنوان */
+    .logo-container {
         text-align: center;
-        color: #212529;
-        font-size: 2.8rem;
-        font-weight: 800;
-        margin-bottom: 0.5rem;
-        letter-spacing: -0.5px;
+        margin-bottom: 1rem;
     }
 
-    .subtitle {
+    .logo-text {
+        font-family: 'Poppins', sans-serif;
+        font-size: 3.5rem;
+        font-weight: 800;
+        letter-spacing: -1px;
+        margin-bottom: 0.3rem;
+    }
+
+    .logo-real {
+        color: #0056B3;
+    }
+
+    .logo-predict {
+        color: #28A745;
+    }
+
+    .tagline {
         text-align: center;
         color: #495057;
         font-size: 1.1rem;
         margin-bottom: 2.5rem;
         font-weight: 400;
+        font-style: italic;
     }
 
-    /* البطاقات - رمادي فاتح مع ظل */
+    /* البطاقات */
     .custom-card {
-        background: #F8F9FA;
+        background: #FFFFFF;
         border-radius: 16px;
         padding: 2rem;
         box-shadow: 0 4px 12px rgba(0,0,0,0.08);
         margin-bottom: 1.5rem;
-        border: 1px solid #E9ECEF;
+        border: 2px solid #E9ECEF;
     }
 
-    /* عناوين البطاقات - أسود غامق */
+    /* عناوين البطاقات */
     .card-header {
         font-size: 1.5rem;
         font-weight: 700;
@@ -73,7 +86,7 @@ st.markdown("""
         border-bottom: 3px solid #007BFF;
     }
 
-    /* بطاقة النتيجة - أزرق */
+    /* بطاقة النتيجة */
     .result-card {
         background: linear-gradient(135deg, #007BFF 0%, #0056B3 100%);
         border-radius: 16px;
@@ -85,19 +98,20 @@ st.markdown("""
 
     .result-text {
         color: #FFFFFF;
-        font-size: 1rem;
+        font-size: 0.95rem;
         font-weight: 600;
         margin-bottom: 0.8rem;
         text-transform: uppercase;
         letter-spacing: 2px;
-        opacity: 0.9;
+        opacity: 0.95;
     }
 
     .result-price {
         color: #FFFFFF;
-        font-size: 3rem;
+        font-size: 3.2rem;
         font-weight: 800;
         margin: 0.5rem 0;
+        text-shadow: 0 2px 10px rgba(0,0,0,0.2);
     }
 
     .result-currency {
@@ -107,7 +121,7 @@ st.markdown("""
         opacity: 0.9;
     }
 
-    /* الأزرار - أزرق */
+    /* الأزرار */
     .stButton>button {
         width: 100%;
         background: linear-gradient(135deg, #007BFF 0%, #0056B3 100%);
@@ -128,7 +142,7 @@ st.markdown("""
         background: linear-gradient(135deg, #0056B3 0%, #004085 100%);
     }
 
-    /* Labels - أسود غامق */
+    /* Labels */
     label {
         font-weight: 700 !important;
         color: #212529 !important;
@@ -136,7 +150,7 @@ st.markdown("""
         margin-bottom: 0.5rem !important;
     }
 
-    /* Selectbox - خلفية بيضاء */
+    /* Selectbox */
     div[data-baseweb="select"] {
         background: #FFFFFF !important;
         border-radius: 12px !important;
@@ -155,7 +169,7 @@ st.markdown("""
         font-weight: 600 !important;
     }
 
-    /* Number Input - خلفية بيضاء */
+    /* Number Input */
     .stNumberInput > div > div > input {
         background: #FFFFFF !important;
         border: 2px solid #DEE2E6 !important;
@@ -172,7 +186,6 @@ st.markdown("""
         box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1) !important;
     }
 
-    /* أزرار Number Input */
     .stNumberInput button {
         background: #F1F3F5 !important;
         color: #495057 !important;
@@ -186,17 +199,24 @@ st.markdown("""
     }
 
     /* Slider */
+    .stSlider {
+        padding: 1.5rem 0.5rem !important;
+    }
+
     .stSlider > div > div > div > div {
         background: #007BFF !important;
+        height: 6px !important;
     }
 
     .stSlider > div > div > div > div > div {
         background: white !important;
-        border: 3px solid #007BFF !important;
+        border: 4px solid #007BFF !important;
         box-shadow: 0 2px 8px rgba(0, 123, 255, 0.3) !important;
+        width: 24px !important;
+        height: 24px !important;
     }
 
-    /* Checkboxes - خلفية بيضاء */
+    /* Checkboxes */
     .stCheckbox {
         background: #FFFFFF;
         padding: 1rem 1.2rem;
@@ -221,7 +241,7 @@ st.markdown("""
     /* Sidebar */
     [data-testid="stSidebar"] {
         background: #F8F9FA;
-        border-right: 1px solid #DEE2E6;
+        border-right: 2px solid #DEE2E6;
     }
 
     /* Info Box */
@@ -307,11 +327,49 @@ st.markdown("""
         margin-top: 0.5rem;
     }
 
+    /* Chart Card */
+    .chart-card {
+        background: #FFFFFF;
+        border-radius: 16px;
+        padding: 2rem;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        margin-top: 1.5rem;
+        border: 2px solid #E9ECEF;
+    }
+
+    .chart-header {
+        font-size: 1.3rem;
+        font-weight: 700;
+        color: #212529;
+        margin-bottom: 1.2rem;
+    }
+
     /* Divider */
     hr {
         margin: 1.5rem 0;
         border: none;
         border-top: 2px solid #DEE2E6;
+    }
+
+    /* Footer */
+    .footer {
+        text-align: center;
+        color: #212529;
+        font-size: 0.9rem;
+        padding: 2rem 0;
+        margin-top: 3rem;
+        border-top: 2px solid #DEE2E6;
+    }
+
+    .footer-main {
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+        color: #495057;
+    }
+
+    .footer-copyright {
+        font-size: 0.85rem;
+        color: #6C757D;
     }
 </style>
 """, unsafe_allow_html=True)
@@ -392,13 +450,19 @@ with st.sidebar:
         </div>
         """, unsafe_allow_html=True)
 
-# العنوان
+# Logo والعنوان
+st.markdown("""
+<div class='logo-container'>
+    <div class='logo-text'>
+        <span class='logo-real'>Real</span><span class='logo-predict'>Predict</span>
+    </div>
+</div>
+""", unsafe_allow_html=True)
+
 if is_arabic:
-    st.markdown("<h1 class='main-title'>نظام التنبؤ بأسعار العقارات في الأردن</h1>", unsafe_allow_html=True)
-    st.markdown("<p class='subtitle'>تقييم دقيق وذكي باستخدام الذكاء الاصطناعي</p>", unsafe_allow_html=True)
+    st.markdown("<p class='tagline'>توقعات ذكية لأسعار العقارات</p>", unsafe_allow_html=True)
 else:
-    st.markdown("<h1 class='main-title'>Jordan Property Price Prediction System</h1>", unsafe_allow_html=True)
-    st.markdown("<p class='subtitle'>Accurate & Smart Valuation Using AI</p>", unsafe_allow_html=True)
+    st.markdown("<p class='tagline'>Smart Forecasts for Real Estate Prices</p>", unsafe_allow_html=True)
 
 # Layout
 col1, col2 = st.columns([1.4, 1], gap="large")
@@ -436,7 +500,10 @@ with col1:
     col_e, col_f = st.columns(2, gap="medium")
     with col_e:
         floor = st.number_input("الطابق" if is_arabic else "Floor", 0, 20, 3, 1)
+    with col_f:
+        st.markdown("<br>", unsafe_allow_html=True)
 
+    st.markdown("<br>", unsafe_allow_html=True)
     services = st.slider("قرب الخدمات (1-10)" if is_arabic else "Services Proximity (1-10)", 1, 10, 7)
 
     st.markdown("</div>", unsafe_allow_html=True)
@@ -459,7 +526,7 @@ with col1:
     st.markdown("</div>", unsafe_allow_html=True)
 
 with col2:
-    calculate_btn = st.button("احسب السعر المتوقع" if is_arabic else "Calculate Price", use_container_width=True)
+    calculate_btn = st.button("ابدأ التوقع" if is_arabic else "Start Prediction", use_container_width=True)
 
     if calculate_btn:
         region_encoded = le.transform([region_ar])[0]
@@ -486,33 +553,32 @@ with col2:
         st.markdown("<div class='result-card'>", unsafe_allow_html=True)
         if is_arabic:
             st.markdown("<div class='result-text'>السعر المتوقع</div>", unsafe_allow_html=True)
-            st.markdown(f"<div class='result-price'>{predicted_price:,.0f} د.أ</div>", unsafe_allow_html=True)
-
-            if diff_percent > 0:
-                st.markdown(f"<div class='trend-up'>↑ أعلى بـ {abs(diff_percent):.1f}% من متوسط المنطقة</div>",
-                            unsafe_allow_html=True)
-            else:
-                st.markdown(f"<div class='trend-down'>↓ أقل بـ {abs(diff_percent):.1f}% من متوسط المنطقة</div>",
-                            unsafe_allow_html=True)
+            st.markdown(f"<div class='result-price'>{predicted_price:,.0f}</div>", unsafe_allow_html=True)
+            st.markdown("<div class='result-currency'>دينار أردني</div>", unsafe_allow_html=True)
         else:
             st.markdown("<div class='result-text'>Estimated Price</div>", unsafe_allow_html=True)
-            st.markdown(f"<div class='result-price'>{predicted_price:,.0f} JOD</div>", unsafe_allow_html=True)
-
-            if diff_percent > 0:
-                st.markdown(f"<div class='trend-up'>↑ {abs(diff_percent):.1f}% above regional avg</div>",
-                            unsafe_allow_html=True)
-            else:
-                st.markdown(f"<div class='trend-down'>↓ {abs(diff_percent):.1f}% below regional avg</div>",
-                            unsafe_allow_html=True)
-
+            st.markdown(f"<div class='result-price'>{predicted_price:,.0f}</div>", unsafe_allow_html=True)
+            st.markdown("<div class='result-currency'>Jordanian Dinar</div>", unsafe_allow_html=True)
         st.markdown("</div>", unsafe_allow_html=True)
 
-        # رسم بياني
-        st.markdown("<div class='custom-card'>", unsafe_allow_html=True)
-        if is_arabic:
-            st.markdown("<div class='card-header'>مقارنة الأسعار</div>", unsafe_allow_html=True)
+        # Trend
+        if diff_percent > 0:
+            trend_text = f"أعلى بـ {abs(diff_percent):.1f}% من متوسط المنطقة" if is_arabic else f"{abs(diff_percent):.1f}% above regional avg"
+            st.markdown(
+                f"<div style='text-align: center; margin-top: 1rem;'><span class='trend-up'>↑ {trend_text}</span></div>",
+                unsafe_allow_html=True)
         else:
-            st.markdown("<div class='card-header'>Price Comparison</div>", unsafe_allow_html=True)
+            trend_text = f"أقل بـ {abs(diff_percent):.1f}% من متوسط المنطقة" if is_arabic else f"{abs(diff_percent):.1f}% below regional avg"
+            st.markdown(
+                f"<div style='text-align: center; margin-top: 1rem;'><span class='trend-down'>↓ {trend_text}</span></div>",
+                unsafe_allow_html=True)
+
+        # رسم بياني
+        st.markdown("<div class='chart-card'>", unsafe_allow_html=True)
+        if is_arabic:
+            st.markdown("<div class='chart-header'>مقارنة الأسعار</div>", unsafe_allow_html=True)
+        else:
+            st.markdown("<div class='chart-header'>Price Comparison</div>", unsafe_allow_html=True)
 
         fig = go.Figure(data=[
             go.Bar(
@@ -522,41 +588,49 @@ with col2:
                 marker_color=['#007BFF', '#6C757D'],
                 text=[f'{predicted_price:,.0f}', f'{region_avg:,.0f}'],
                 textposition='outside',
-                textfont=dict(size=14, color='#212529', weight=700)
+                textfont=dict(size=15, color='#212529', weight=700, family='Cairo')
             )
         ])
 
         fig.update_layout(
             plot_bgcolor='rgba(255,255,255,0)',
             paper_bgcolor='rgba(255,255,255,0)',
-            height=300,
-            margin=dict(t=40, b=30, l=20, r=20),
-            yaxis=dict(showgrid=True, gridcolor='#E9ECEF', showticklabels=True,
-                       tickfont=dict(size=11, color='#495057')),
-            xaxis=dict(showgrid=False, tickfont=dict(size=12, color='#212529', weight=600))
+            height=320,
+            margin=dict(t=50, b=40, l=30, r=30),
+            yaxis=dict(
+                showgrid=True,
+                gridcolor='#E9ECEF',
+                showticklabels=True,
+                tickfont=dict(size=11, color='#495057', family='Cairo'),
+                title=None
+            ),
+            xaxis=dict(
+                showgrid=False,
+                tickfont=dict(size=13, color='#212529', weight=600, family='Cairo')
+            )
         )
 
         st.plotly_chart(fig, use_container_width=True)
         st.markdown("</div>", unsafe_allow_html=True)
     else:
         st.markdown("<div class='initial-state'>", unsafe_allow_html=True)
-        st.markdown("<div class='initial-state-icon'>🏛️</div>", unsafe_allow_html=True)
+        st.markdown("<div class='initial-state-icon'>📊</div>", unsafe_allow_html=True)
 
         if is_arabic:
-            st.markdown("<div class='initial-state-title'>ابدأ التقييم</div>", unsafe_allow_html=True)
-            st.markdown("<div class='initial-state-desc'>أدخل معلومات العقار واضغط زر الحساب</div>",
+            st.markdown("<div class='initial-state-title'>ابدأ التقييم الآن</div>", unsafe_allow_html=True)
+            st.markdown("<div class='initial-state-desc'>أدخل معلومات العقار واضغط زر التوقع</div>",
                         unsafe_allow_html=True)
         else:
-            st.markdown("<div class='initial-state-title'>Start Valuation</div>", unsafe_allow_html=True)
-            st.markdown("<div class='initial-state-desc'>Enter property details and calculate</div>",
+            st.markdown("<div class='initial-state-title'>Start Your Valuation</div>", unsafe_allow_html=True)
+            st.markdown("<div class='initial-state-desc'>Enter property details and click predict</div>",
                         unsafe_allow_html=True)
 
         st.markdown("</div>", unsafe_allow_html=True)
 
 # Footer
 st.markdown("""
-<div style='text-align: center; color: #6C757D; font-size: 0.9rem; padding: 1.5rem 0; margin-top: 2rem; border-top: 2px solid #DEE2E6;'>
-    <div style='margin-bottom: 0.3rem;'>Powered by Machine Learning Technology</div>
-    <div style='font-size: 0.85rem;'>© 2024 NOUR MAAITA - All Rights Reserved</div>
+<div class='footer'>
+    <div class='footer-main'>Powered by Machine Learning Technology</div>
+    <div class='footer-copyright'>© 2024 NOUR MAAITA - All Rights Reserved</div>
 </div>
 """, unsafe_allow_html=True)
