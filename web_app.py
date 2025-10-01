@@ -8,33 +8,185 @@ st.set_page_config(
     page_title="RealPredict - Smart Real Estate Valuation",
     page_icon="🏢",
     layout="wide",
-    initial_sidebar_state="collapsed"
+    initial_sidebar_state="expanded"
 )
 
+# Translations
+translations = {
+    'en': {
+        'title': 'RealPredict',
+        'subtitle': 'Professional Real Estate Valuation Platform',
+        'powered': 'Powered by Advanced Machine Learning & Market Analytics',
+        'location': 'Property Location & Details',
+        'region': 'Select Region',
+        'area': 'Area (Square Meters)',
+        'bedrooms': 'Number of Bedrooms',
+        'bathrooms': 'Number of Bathrooms',
+        'age': 'Property Age (Years)',
+        'features': 'Property Features & Amenities',
+        'elevator': '🛗 Elevator Available',
+        'parking': '🚗 Parking Space',
+        'garden': '🌳 Private Garden',
+        'heating': '🔥 Central Heating',
+        'services': 'Proximity to Services & Amenities (1-10)',
+        'calculate': '🔍 Calculate Property Value',
+        'estimated': 'Estimated Market Value',
+        'currency': 'Jordanian Dinar (JOD)',
+        'above': 'Above Regional Average',
+        'below': 'Below Regional Average',
+        'price_sqm': 'Price/SQM',
+        'region_avg': 'Region Avg',
+        'comparison': 'Market Comparison Analysis',
+        'your_property': 'Your Property',
+        'regional_avg': 'Regional Average',
+        'ready': 'Ready to Estimate',
+        'enter_details': 'Enter property details and click',
+        'language': 'Language',
+        'theme': 'Theme',
+        'light': 'Light',
+        'dark': 'Dark'
+    },
+    'ar': {
+        'title': 'RealPredict',
+        'subtitle': 'منصة احترافية لتقييم العقارات',
+        'powered': 'مدعوم بالذكاء الاصطناعي وتحليلات السوق المتقدمة',
+        'location': 'الموقع وتفاصيل العقار',
+        'region': 'اختر المنطقة',
+        'area': 'المساحة (متر مربع)',
+        'bedrooms': 'عدد غرف النوم',
+        'bathrooms': 'عدد الحمامات',
+        'age': 'عمر العقار (سنوات)',
+        'features': 'مميزات ووسائل الراحة',
+        'elevator': '🛗 يوجد مصعد',
+        'parking': '🚗 موقف سيارات',
+        'garden': '🌳 حديقة خاصة',
+        'heating': '🔥 تدفئة مركزية',
+        'services': 'القرب من الخدمات (1-10)',
+        'calculate': '🔍 احسب قيمة العقار',
+        'estimated': 'القيمة السوقية المقدرة',
+        'currency': 'دينار أردني',
+        'above': 'أعلى من متوسط المنطقة',
+        'below': 'أقل من متوسط المنطقة',
+        'price_sqm': 'السعر/متر',
+        'region_avg': 'متوسط المنطقة',
+        'comparison': 'تحليل مقارنة السوق',
+        'your_property': 'عقارك',
+        'regional_avg': 'المتوسط الإقليمي',
+        'ready': 'جاهز للتقييم',
+        'enter_details': 'أدخل تفاصيل العقار واضغط',
+        'language': 'اللغة',
+        'theme': 'المظهر',
+        'light': 'فاتح',
+        'dark': 'داكن'
+    }
+}
+
+# Sidebar settings
+with st.sidebar:
+    st.markdown("### ⚙️ Settings / الإعدادات")
+
+    lang = st.radio(
+        "🌐 Language / اللغة",
+        options=['en', 'ar'],
+        format_func=lambda x: 'English' if x == 'en' else 'العربية',
+        key='language',
+        horizontal=True
+    )
+
+    theme = st.radio(
+        "🎨 Theme / المظهر",
+        options=['light', 'dark'],
+        format_func=lambda x: 'Light' if x == 'light' else 'Dark',
+        key='theme',
+        horizontal=True
+    )
+
+t = translations[lang]
+
+# Dynamic CSS based on theme
+bg_color = '#ffffff' if theme == 'light' else '#0f172a'
+bg_gradient = 'linear-gradient(135deg, #f5f7fa 0%, #e8ecf1 100%)' if theme == 'light' else 'linear-gradient(135deg, #0f172a 0%, #1e293b 100%)'
+card_bg = '#ffffff' if theme == 'light' else '#1e293b'
+text_primary = '#1e3c72' if theme == 'light' else '#f1f5f9'
+text_secondary = '#334155' if theme == 'light' else '#cbd5e1'
+border_color = '#e8ecf1' if theme == 'light' else '#334155'
+input_bg = '#f8fafc' if theme == 'light' else '#0f172a'
+input_border = '#e2e8f0' if theme == 'light' else '#475569'
+hover_bg = '#f1f5f9' if theme == 'light' else '#334155'
+checkbox_bg = '#f8fafc' if theme == 'light' else '#1e293b'
+
 # Enhanced Professional CSS
-st.markdown("""
+st.markdown(f"""
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:wght@700;800&display=swap');
 
-    #MainMenu {visibility: hidden;}
-    footer {visibility: hidden;}
-    header {visibility: hidden;}
+    #MainMenu {{visibility: hidden;}}
+    footer {{visibility: hidden;}}
+    header {{visibility: hidden;}}
 
-    * {
+    * {{
         font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-    }
+    }}
 
-    .stApp {
-        background: linear-gradient(135deg, #f5f7fa 0%, #e8ecf1 100%);
-    }
+    .stApp {{
+        background: {bg_gradient};
+    }}
 
-    .main .block-container {
+    section[data-testid="stSidebar"] {{
+        background: {card_bg};
+        border-right: 2px solid {border_color};
+    }}
+
+    section[data-testid="stSidebar"] .stMarkdown h3 {{
+        color: {text_primary} !important;
+        font-size: 1.2rem !important;
+    }}
+
+    section[data-testid="stSidebar"] .stMarkdown p {{
+        color: {text_secondary} !important;
+    }}
+
+    section[data-testid="stSidebar"] .stMarkdown strong {{
+        color: {text_primary} !important;
+    }}
+
+    section[data-testid="stSidebar"] label {{
+        color: {text_secondary} !important;
+        font-weight: 700 !important;
+        font-size: 1rem !important;
+    }}
+
+    section[data-testid="stSidebar"] .stRadio > label {{
+        color: {text_primary} !important;
+    }}
+
+    section[data-testid="stSidebar"] div[role="radiogroup"] label {{
+        background: {input_bg} !important;
+        padding: 0.75rem 1rem !important;
+        border-radius: 8px !important;
+        border: 2px solid {input_border} !important;
+        margin: 0.25rem 0 !important;
+        transition: all 0.3s ease !important;
+    }}
+
+    section[data-testid="stSidebar"] div[role="radiogroup"] label:hover {{
+        border-color: #2a5298 !important;
+        background: {hover_bg} !important;
+    }}
+
+    section[data-testid="stSidebar"] div[role="radiogroup"] label[data-checked="true"] {{
+        background: #2a5298 !important;
+        color: white !important;
+        border-color: #2a5298 !important;
+    }}
+
+    .main .block-container {{
         padding: 2rem 3rem;
         max-width: 1400px;
-    }
+    }}
 
     /* Header Section */
-    .header-container {
+    .header-container {{
         background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
         border-radius: 24px;
         padding: 3rem 2.5rem;
@@ -42,9 +194,9 @@ st.markdown("""
         box-shadow: 0 10px 40px rgba(30, 60, 114, 0.25);
         position: relative;
         overflow: hidden;
-    }
+    }}
 
-    .header-container::before {
+    .header-container::before {{
         content: '';
         position: absolute;
         top: 0;
@@ -53,70 +205,72 @@ st.markdown("""
         height: 400px;
         background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
         border-radius: 50%;
-    }
+    }}
 
-    .logo-container {
+    .logo-container {{
         position: relative;
         z-index: 1;
-    }
+        text-align: {'right' if lang == 'ar' else 'left'};
+    }}
 
-    .logo-text {
+    .logo-text {{
         font-family: 'Playfair Display', serif;
         font-size: 3.2rem;
         font-weight: 800;
         margin-bottom: 0.5rem;
         color: #ffffff;
         letter-spacing: -1px;
-    }
+    }}
 
-    .logo-icon {
+    .logo-icon {{
         display: inline-block;
-        margin-right: 0.5rem;
+        margin-{'left' if lang == 'ar' else 'right'}: 0.5rem;
         font-size: 3rem;
-    }
+    }}
 
-    .tagline {
+    .tagline {{
         color: rgba(255, 255, 255, 0.9);
         font-size: 1.15rem;
         font-weight: 500;
         letter-spacing: 0.5px;
-    }
+    }}
 
-    .subtitle {
+    .subtitle {{
         color: rgba(255, 255, 255, 0.75);
         font-size: 0.95rem;
         margin-top: 1rem;
         font-weight: 400;
-    }
+    }}
 
     /* Main Grid Layout */
-    .input-section {
-        background: #ffffff;
+    .input-section {{
+        background: {card_bg};
         border-radius: 20px;
         padding: 2rem;
-        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-        border: 1px solid #e8ecf1;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, {'0.08' if theme == 'light' else '0.3'});
+        border: 1px solid {border_color};
         margin-bottom: 1.5rem;
-    }
+    }}
 
-    .section-header {
+    .section-header {{
         font-size: 1.4rem;
         font-weight: 700;
-        color: #1e3c72;
+        color: {text_primary};
         margin-bottom: 1.5rem;
         padding-bottom: 0.75rem;
         border-bottom: 3px solid #2a5298;
         display: flex;
         align-items: center;
-    }
+        direction: {'rtl' if lang == 'ar' else 'ltr'};
+    }}
 
-    .section-icon {
-        margin-right: 0.75rem;
+    .section-icon {{
+        margin-{'left' if lang == 'ar' else 'right'}: 0.75rem;
         font-size: 1.6rem;
-    }
+    }}
 
     /* Enhanced Result Card */
-    .result-card {
+    .result-card {{
         background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
         border-radius: 24px;
         padding: 3rem 2.5rem;
@@ -125,9 +279,9 @@ st.markdown("""
         position: relative;
         overflow: hidden;
         min-height: 380px;
-    }
+    }}
 
-    .result-card::before {
+    .result-card::before {{
         content: '';
         position: absolute;
         top: -50%;
@@ -136,19 +290,19 @@ st.markdown("""
         height: 200%;
         background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
         animation: pulse 4s ease-in-out infinite;
-    }
+    }}
 
-    @keyframes pulse {
-        0%, 100% { transform: scale(1); opacity: 0.5; }
-        50% { transform: scale(1.1); opacity: 0.3; }
-    }
+    @keyframes pulse {{
+        0%, 100% {{ transform: scale(1); opacity: 0.5; }}
+        50% {{ transform: scale(1.1); opacity: 0.3; }}
+    }}
 
-    .result-content {
+    .result-content {{
         position: relative;
         z-index: 1;
-    }
+    }}
 
-    .result-badge {
+    .result-badge {{
         display: inline-block;
         background: rgba(255, 255, 255, 0.2);
         color: #ffffff;
@@ -160,9 +314,9 @@ st.markdown("""
         text-transform: uppercase;
         margin-bottom: 1.5rem;
         backdrop-filter: blur(10px);
-    }
+    }}
 
-    .result-price {
+    .result-price {{
         color: #ffffff;
         font-size: 4.5rem;
         font-weight: 900;
@@ -170,16 +324,16 @@ st.markdown("""
         text-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
         line-height: 1;
         letter-spacing: -2px;
-    }
+    }}
 
-    .result-currency {
+    .result-currency {{
         color: rgba(255, 255, 255, 0.9);
         font-size: 1.3rem;
         font-weight: 600;
         margin-bottom: 2rem;
-    }
+    }}
 
-    .trend-container {
+    .trend-container {{
         background: rgba(255, 255, 255, 0.95);
         border-radius: 16px;
         padding: 1.25rem 2rem;
@@ -187,142 +341,145 @@ st.markdown("""
         max-width: 85%;
         box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
         backdrop-filter: blur(10px);
-    }
+    }}
 
-    .trend-content {
+    .trend-content {{
         display: flex;
         align-items: center;
         justify-content: center;
         gap: 1rem;
-    }
+    }}
 
-    .trend-icon {
+    .trend-icon {{
         font-size: 2rem;
         font-weight: 800;
-    }
+    }}
 
-    .trend-up { color: #10b981; }
-    .trend-down { color: #ef4444; }
+    .trend-up {{ color: #10b981; }}
+    .trend-down {{ color: #ef4444; }}
 
-    .trend-text {
+    .trend-text {{
         color: #1e293b;
         font-size: 1.15rem;
         font-weight: 700;
         margin: 0;
-    }
+    }}
 
     /* Enhanced Form Elements */
-    label {
+    label {{
         font-weight: 600 !important;
-        color: #334155 !important;
+        color: {text_secondary} !important;
         font-size: 0.95rem !important;
         margin-bottom: 0.5rem !important;
         display: block !important;
-    }
+    }}
 
     /* Selectbox Styling */
-    div[data-baseweb="select"] {
-        background: #f8fafc !important;
+    div[data-baseweb="select"] {{
+        background: {input_bg} !important;
         border-radius: 12px !important;
-        border: 2px solid #e2e8f0 !important;
+        border: 2px solid {input_border} !important;
         transition: all 0.3s ease !important;
-    }
+    }}
 
-    div[data-baseweb="select"]:hover {
+    div[data-baseweb="select"]:hover {{
         border-color: #2a5298 !important;
-    }
+        background: {hover_bg} !important;
+    }}
 
-    div[data-baseweb="select"] > div {
+    div[data-baseweb="select"] > div {{
         padding: 1rem 1.25rem !important;
         font-size: 1rem !important;
         font-weight: 600 !important;
-        color: #1e293b !important;
+        color: {text_primary} !important;
         background: transparent !important;
-    }
+    }}
 
-    div[data-baseweb="popover"] {
-        background: #ffffff !important;
-        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15) !important;
-    }
-
-    ul[role="listbox"] {
-        background: #ffffff !important;
-        border: 2px solid #e2e8f0 !important;
+    div[data-baseweb="popover"] {{
+        background: {card_bg} !important;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, {'0.15' if theme == 'light' else '0.5'}) !important;
+        border: 2px solid {input_border} !important;
         border-radius: 12px !important;
-    }
+    }}
 
-    ul[role="listbox"] li {
-        color: #1e293b !important;
-        background: #ffffff !important;
+    ul[role="listbox"] {{
+        background: {card_bg} !important;
+        border: none !important;
+    }}
+
+    ul[role="listbox"] li {{
+        color: {text_primary} !important;
+        background: {card_bg} !important;
         padding: 1rem 1.25rem !important;
         font-weight: 600 !important;
         transition: all 0.2s ease !important;
-    }
+    }}
 
-    ul[role="listbox"] li:hover {
-        background: #f1f5f9 !important;
+    ul[role="listbox"] li:hover {{
+        background: {hover_bg} !important;
         color: #2a5298 !important;
-    }
+    }}
 
-    ul[role="listbox"] li[aria-selected="true"] {
+    ul[role="listbox"] li[aria-selected="true"] {{
         background: #2a5298 !important;
         color: #ffffff !important;
-    }
+    }}
 
     /* Number Input */
-    .stNumberInput > div > div > input {
-        background: #f8fafc !important;
-        border: 2px solid #e2e8f0 !important;
+    .stNumberInput > div > div > input {{
+        background: {input_bg} !important;
+        border: 2px solid {input_border} !important;
         border-radius: 12px !important;
         padding: 1rem 1.25rem !important;
         font-size: 1rem !important;
         font-weight: 600 !important;
-        color: #1e293b !important;
+        color: {text_primary} !important;
         transition: all 0.3s ease !important;
-    }
+    }}
 
-    .stNumberInput > div > div > input:focus {
+    .stNumberInput > div > div > input:focus {{
         border-color: #2a5298 !important;
         box-shadow: 0 0 0 3px rgba(42, 82, 152, 0.1) !important;
-    }
+        background: {card_bg} !important;
+    }}
 
     /* Slider */
-    .stSlider > div > div > div > div {
+    .stSlider > div > div > div > div {{
         background: linear-gradient(90deg, #2a5298 0%, #1e3c72 100%) !important;
         height: 6px !important;
-    }
+    }}
 
-    .stSlider > div > div > div > div > div {
+    .stSlider > div > div > div > div > div {{
         background: white !important;
         border: 4px solid #2a5298 !important;
         width: 26px !important;
         height: 26px !important;
         box-shadow: 0 3px 12px rgba(42, 82, 152, 0.4) !important;
-    }
+    }}
 
     /* Checkboxes */
-    .stCheckbox {
-        background: #f8fafc;
+    .stCheckbox {{
+        background: {checkbox_bg};
         padding: 1rem 1.25rem;
         border-radius: 12px;
         margin-bottom: 0.75rem;
-        border: 2px solid #e2e8f0;
+        border: 2px solid {input_border};
         transition: all 0.3s ease;
-    }
+    }}
 
-    .stCheckbox:hover {
-        border-color: #cbd5e1;
-        background: #f1f5f9;
-    }
+    .stCheckbox:hover {{
+        border-color: #2a5298;
+        background: {hover_bg};
+    }}
 
-    .stCheckbox label {
+    .stCheckbox label {{
         font-weight: 600 !important;
         font-size: 0.95rem !important;
-        color: #334155 !important;
-    }
+        color: {text_secondary} !important;
+    }}
 
     /* Button */
-    .stButton>button {
+    .stButton>button {{
         width: 100%;
         background: linear-gradient(135deg, #2a5298 0%, #1e3c72 100%);
         color: white;
@@ -336,60 +493,60 @@ st.markdown("""
         transition: all 0.3s ease;
         text-transform: uppercase;
         letter-spacing: 1px;
-    }
+    }}
 
-    .stButton>button:hover {
+    .stButton>button:hover {{
         transform: translateY(-3px);
         box-shadow: 0 10px 30px rgba(42, 82, 152, 0.45);
-    }
+    }}
 
     /* Chart Container */
-    .chart-section {
-        background: #ffffff;
+    .chart-section {{
+        background: {card_bg};
         border-radius: 20px;
         padding: 2rem;
         margin-top: 2rem;
-        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-        border: 1px solid #e8ecf1;
-    }
+        box-shadow: 0 4px 20px rgba(0, 0, 0, {'0.08' if theme == 'light' else '0.3'});
+        border: 1px solid {border_color};
+    }}
 
-    .chart-title {
+    .chart-title {{
         font-size: 1.3rem;
         font-weight: 700;
-        color: #1e3c72;
+        color: {text_primary};
         margin-bottom: 1.5rem;
-    }
+    }}
 
     /* Info Cards */
-    .info-grid {
+    .info-grid {{
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
         gap: 1rem;
         margin-top: 1.5rem;
-    }
+    }}
 
-    .info-card-mini {
-        background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+    .info-card-mini {{
+        background: {input_bg};
         border-radius: 12px;
         padding: 1.25rem;
-        border: 2px solid #e2e8f0;
+        border: 2px solid {input_border};
         text-align: center;
-    }
+    }}
 
-    .info-card-mini .label {
+    .info-card-mini .label {{
         font-size: 0.85rem;
-        color: #64748b;
+        color: {text_secondary};
         font-weight: 600;
         margin-bottom: 0.5rem;
         text-transform: uppercase;
         letter-spacing: 0.5px;
-    }
+    }}
 
-    .info-card-mini .value {
+    .info-card-mini .value {{
         font-size: 1.5rem;
-        color: #1e3c72;
+        color: {text_primary};
         font-weight: 800;
-    }
+    }}
 </style>
 """, unsafe_allow_html=True)
 
@@ -427,15 +584,41 @@ def load_model():
 
 model, le, regions_ar, regions_en, df = load_model()
 
+# Settings Header (Above main content)
+settings_container = st.container()
+with settings_container:
+    st.markdown(f"""
+    <div style='background: {card_bg}; padding: 1rem 1.5rem; border-radius: 12px; margin-bottom: 1.5rem; 
+                border: 2px solid {border_color}; display: flex; justify-content: space-between; align-items: center;'>
+        <div style='display: flex; gap: 2rem; align-items: center;'>
+            <div>
+                <span style='font-size: 1.1rem; color: {text_secondary}; font-weight: 600;'>🌐 Language:</span>
+                <span style='font-size: 1.1rem; color: {text_primary}; font-weight: 700; margin-left: 0.5rem;'>
+                    {'English' if lang == 'en' else 'العربية'}
+                </span>
+            </div>
+            <div>
+                <span style='font-size: 1.1rem; color: {text_secondary}; font-weight: 600;'>🎨 Theme:</span>
+                <span style='font-size: 1.1rem; color: {text_primary}; font-weight: 700; margin-left: 0.5rem;'>
+                    {'Light' if theme == 'light' else 'Dark'}
+                </span>
+            </div>
+        </div>
+        <div style='font-size: 0.9rem; color: {text_secondary};'>
+            ⚙️ Change in Sidebar
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
+
 # Header
-st.markdown("""
+st.markdown(f"""
 <div class='header-container'>
     <div class='logo-container'>
         <div class='logo-text'>
-            <span class='logo-icon'>🏢</span>RealPredict
+            <span class='logo-icon'>🏢</span>{t['title']}
         </div>
-        <div class='tagline'>Professional Real Estate Valuation Platform</div>
-        <div class='subtitle'>Powered by Advanced Machine Learning & Market Analytics</div>
+        <div class='tagline'>{t['subtitle']}</div>
+        <div class='subtitle'>{t['powered']}</div>
     </div>
 </div>
 """, unsafe_allow_html=True)
@@ -446,43 +629,43 @@ col_left, col_right = st.columns([1.2, 1], gap="large")
 with col_left:
     # Location & Basic Info
     st.markdown(
-        "<div class='input-section'><div class='section-header'><span class='section-icon'>📍</span>Property Location & Details</div>",
+        f"<div class='input-section'><div class='section-header'><span class='section-icon'>📍</span>{t['location']}</div>",
         unsafe_allow_html=True)
 
     region_options = [regions_en[r] for r in regions_ar]
-    region = st.selectbox("Select Region", region_options, index=0)
+    region = st.selectbox(t['region'], region_options, index=0)
     region_ar = [k for k, v in regions_en.items() if v == region][0]
 
     col1, col2 = st.columns(2)
     with col1:
-        area = st.number_input("Area (Square Meters)", 50, 1000, 150, 10)
-        rooms = st.number_input("Number of Bedrooms", 1, 10, 3, 1)
+        area = st.number_input(t['area'], 50, 1000, 150, 10)
+        rooms = st.number_input(t['bedrooms'], 1, 10, 3, 1)
     with col2:
-        bathrooms = st.number_input("Number of Bathrooms", 1, 5, 2, 1)
-        age = st.number_input("Property Age (Years)", 0, 100, 5, 1)
+        bathrooms = st.number_input(t['bathrooms'], 1, 5, 2, 1)
+        age = st.number_input(t['age'], 0, 100, 5, 1)
 
     st.markdown("</div>", unsafe_allow_html=True)
 
     # Amenities
     st.markdown(
-        "<div class='input-section'><div class='section-header'><span class='section-icon'>✨</span>Property Features & Amenities</div>",
+        f"<div class='input-section'><div class='section-header'><span class='section-icon'>✨</span>{t['features']}</div>",
         unsafe_allow_html=True)
 
     col1, col2 = st.columns(2)
     with col1:
-        elevator = st.checkbox("🛗 Elevator Available", True)
-        parking = st.checkbox("🚗 Parking Space", True)
+        elevator = st.checkbox(t['elevator'], True)
+        parking = st.checkbox(t['parking'], True)
     with col2:
-        garden = st.checkbox("🌳 Private Garden", False)
-        heating = st.checkbox("🔥 Central Heating", True)
+        garden = st.checkbox(t['garden'], False)
+        heating = st.checkbox(t['heating'], True)
 
     st.markdown("<br>", unsafe_allow_html=True)
-    services = st.slider("Proximity to Services & Amenities (1-10)", 1, 10, 7)
+    services = st.slider(t['services'], 1, 10, 7)
 
     st.markdown("</div>", unsafe_allow_html=True)
 
     # Prediction Button
-    predict_button = st.button("🔍 Calculate Property Value")
+    predict_button = st.button(t['calculate'])
 
 with col_right:
     if predict_button:
@@ -506,83 +689,80 @@ with col_right:
         region_avg = df[df['المنطقة'] == region_ar]['السعر_دينار'].mean()
         diff_percent = ((predicted_price - region_avg) / region_avg) * 100
 
-        # Result Card
-        if diff_percent > 0:
-            trend_html = f"""
-                <div class='trend-container'>
-                    <div class='trend-content'>
-                        <span class='trend-icon trend-up'>↑</span>
-                        <p class='trend-text'>{abs(diff_percent):.1f}% Above Regional Average</p>
-                    </div>
-                </div>
-            """
-        else:
-            trend_html = f"""
-                <div class='trend-container'>
-                    <div class='trend-content'>
-                        <span class='trend-icon trend-down'>↓</span>
-                        <p class='trend-text'>{abs(diff_percent):.1f}% Below Regional Average</p>
-                    </div>
-                </div>
-            """
+        # Result Card with proper HTML rendering
+        trend_direction = 'up' if diff_percent > 0 else 'down'
+        trend_icon = '↑' if diff_percent > 0 else '↓'
+        trend_color = '#10b981' if diff_percent > 0 else '#ef4444'
+        trend_text = t['above'] if diff_percent > 0 else t['below']
 
         st.markdown(f"""
             <div class='result-card'>
                 <div class='result-content'>
-                    <div class='result-badge'>Estimated Market Value</div>
+                    <div class='result-badge'>{t['estimated']}</div>
                     <div class='result-price'>{predicted_price:,.0f}</div>
-                    <div class='result-currency'>Jordanian Dinar (JOD)</div>
-                    {trend_html}
+                    <div class='result-currency'>{t['currency']}</div>
+                    <div class='trend-container'>
+                        <div class='trend-content'>
+                            <span class='trend-icon' style='color: {trend_color};'>{trend_icon}</span>
+                            <p class='trend-text'>{abs(diff_percent):.1f}% {trend_text}</p>
+                        </div>
+                    </div>
                 </div>
             </div>
         """, unsafe_allow_html=True)
 
         # Info Cards
-        st.markdown("""
+        st.markdown(f"""
         <div class='info-grid'>
             <div class='info-card-mini'>
-                <div class='label'>Price/SQM</div>
-                <div class='value'>""" + f"{predicted_price / area:,.0f}" + """</div>
+                <div class='label'>{t['price_sqm']}</div>
+                <div class='value'>{predicted_price / area:,.0f}</div>
             </div>
             <div class='info-card-mini'>
-                <div class='label'>Region Avg</div>
-                <div class='value'>""" + f"{region_avg:,.0f}" + """</div>
+                <div class='label'>{t['region_avg']}</div>
+                <div class='value'>{region_avg:,.0f}</div>
             </div>
         </div>
         """, unsafe_allow_html=True)
 
         # Chart
-        st.markdown("<div class='chart-section'><div class='chart-title'>Market Comparison Analysis</div>",
+        st.markdown(f"<div class='chart-section'><div class='chart-title'>{t['comparison']}</div>",
                     unsafe_allow_html=True)
+
+        # Chart colors based on theme
+        bar_color = '#2a5298' if theme == 'light' else '#60a5fa'
+        avg_color = '#94a3b8' if theme == 'light' else '#475569'
+        grid_color = '#e2e8f0' if theme == 'light' else '#334155'
+        text_color = text_primary
 
         fig = go.Figure(data=[
             go.Bar(
-                x=['Your Property', 'Regional Average'],
+                x=[t['your_property'], t['regional_avg']],
                 y=[predicted_price, region_avg],
                 marker=dict(
-                    color=['#2a5298', '#94a3b8'],
-                    line=dict(color='#1e3c72', width=2)
+                    color=[bar_color, avg_color],
+                    line=dict(color=bar_color, width=2)
                 ),
-                text=[f'{predicted_price:,.0f} JOD', f'{region_avg:,.0f} JOD'],
+                text=[f'{predicted_price:,.0f}', f'{region_avg:,.0f}'],
                 textposition='outside',
-                textfont=dict(size=13, weight=700, color='#1e3c72')
+                textfont=dict(size=14, weight=700, color=text_color)
             )
         ])
 
         fig.update_layout(
-            plot_bgcolor='rgba(248, 250, 252, 0.5)',
-            paper_bgcolor='rgba(255,255,255,0)',
+            plot_bgcolor='rgba(0,0,0,0)',
+            paper_bgcolor='rgba(0,0,0,0)',
             height=280,
             margin=dict(t=40, b=30, l=20, r=20),
             yaxis=dict(
                 showgrid=True,
-                gridcolor='#e2e8f0',
+                gridcolor=grid_color,
                 showticklabels=True,
-                tickfont=dict(size=11, color='#64748b')
+                tickfont=dict(size=11, color=text_secondary)
             ),
             xaxis=dict(
                 showgrid=False,
-                tickfont=dict(size=12, weight=600, color='#1e3c72')
+                tickfont=dict(size=12, weight=600, color=text_primary)
             ),
             font=dict(family='Inter, sans-serif')
         )
@@ -590,13 +770,13 @@ with col_right:
         st.plotly_chart(fig, use_container_width=True)
         st.markdown("</div>", unsafe_allow_html=True)
     else:
-        st.markdown("""
+        st.markdown(f"""
             <div class='result-card'>
                 <div class='result-content'>
-                    <div class='result-badge'>Ready to Estimate</div>
+                    <div class='result-badge'>{t['ready']}</div>
                     <div style='font-size: 4rem; margin: 2rem 0;'>🏢</div>
-                    <div class='result-currency' style='margin-bottom: 1rem;'>Enter property details and click</div>
-                    <div class='result-currency'>"Calculate Property Value"</div>
+                    <div class='result-currency' style='margin-bottom: 1rem;'>{t['enter_details']}</div>
+                    <div class='result-currency'>"{t['calculate']}"</div>
                 </div>
             </div>
         """, unsafe_allow_html=True)
