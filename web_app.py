@@ -7,8 +7,8 @@ import plotly.graph_objects as go
 st.set_page_config(
     page_title="RealPredict",
     page_icon="🏠",
-    layout="centered",  # تغيير لـ centered بدل wide
-    initial_sidebar_state="collapsed"  # إخفاء Sidebar
+    layout="centered",
+    initial_sidebar_state="collapsed"
 )
 
 # Custom CSS
@@ -74,50 +74,71 @@ st.markdown("""
         margin-bottom: 1.2rem;
     }
 
-    /* Result Card */
+    /* Result Card - محسّن */
     .result-card {
         background: linear-gradient(135deg, #007BFF 0%, #0056B3 100%);
-        border-radius: 16px;
-        padding: 2rem 1.5rem;
+        border-radius: 20px;
+        padding: 2.5rem 2rem;
         text-align: center;
-        margin: 1rem 0;
-        box-shadow: 0 4px 15px rgba(0, 123, 255, 0.3);
+        margin: 1.5rem 0;
+        box-shadow: 0 6px 20px rgba(0, 123, 255, 0.35);
+        min-height: 280px;
     }
 
     .result-label {
         color: #FFFFFF;
-        font-size: 0.9rem;
-        font-weight: 600;
+        font-size: 0.95rem;
+        font-weight: 700;
         text-transform: uppercase;
-        letter-spacing: 1.5px;
-        margin-bottom: 0.5rem;
+        letter-spacing: 2px;
+        margin-bottom: 1rem;
+        opacity: 0.95;
     }
 
     .result-price {
         color: #FFFFFF;
-        font-size: 2.8rem;
-        font-weight: 800;
-        margin: 0.5rem 0;
+        font-size: 3.5rem;
+        font-weight: 900;
+        margin: 1rem 0;
+        text-shadow: 0 3px 12px rgba(0,0,0,0.3);
+        line-height: 1.1;
     }
 
     .result-currency {
         color: #FFFFFF;
-        font-size: 1rem;
+        font-size: 1.15rem;
         font-weight: 600;
+        margin-bottom: 1.5rem;
+        opacity: 0.95;
     }
 
-    .trend-indicator {
-        margin-top: 1rem;
-        font-size: 0.95rem;
+    /* Trend Box */
+    .trend-box {
+        background: rgba(255, 255, 255, 0.95);
+        border-radius: 12px;
+        padding: 1rem 1.5rem;
+        margin: 1.5rem auto 0 auto;
+        max-width: 90%;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+
+    .trend-text {
+        color: #212529;
+        font-size: 1.05rem;
         font-weight: 700;
+        margin: 0;
     }
 
-    .trend-up {
+    .trend-up-icon {
         color: #28A745;
+        font-weight: 800;
+        font-size: 1.2rem;
     }
 
-    .trend-down {
+    .trend-down-icon {
         color: #DC3545;
+        font-weight: 800;
+        font-size: 1.2rem;
     }
 
     /* Button */
@@ -289,11 +310,11 @@ st.markdown("</div>", unsafe_allow_html=True)
 # Features
 col1, col2 = st.columns(2)
 with col1:
-    elevator = st.checkbox("✓ Elevator", True)
-    parking = st.checkbox("✓ Parking", True)
+    elevator = st.checkbox("Elevator", True)
+    parking = st.checkbox("Parking", True)
 with col2:
-    garden = st.checkbox("✓ Garden", False)
-    heating = st.checkbox("✓ Heating", True)
+    garden = st.checkbox("Garden", False)
+    heating = st.checkbox("Heating", True)
 
 # Button
 if st.button("Start Prediction"):
@@ -304,7 +325,7 @@ if st.button("Start Prediction"):
         'عدد_الغرف': [rooms],
         'عدد_الحمامات': [bathrooms],
         'عمر_البناء_سنوات': [age],
-        'طابق': [3],  # default
+        'طابق': [3],
         'يوجد_مصعد': [1 if elevator else 0],
         'يوجد_موقف': [1 if parking else 0],
         'يوجد_حديقة': [1 if garden else 0],
@@ -319,16 +340,29 @@ if st.button("Start Prediction"):
 
     # Result
     st.markdown("<div class='result-card'>", unsafe_allow_html=True)
-    st.markdown("<div class='result-label'>Estimated Price</div>", unsafe_allow_html=True)
+    st.markdown("<div class='result-label'>ESTIMATED PRICE</div>", unsafe_allow_html=True)
     st.markdown(f"<div class='result-price'>{predicted_price:,.0f}</div>", unsafe_allow_html=True)
     st.markdown("<div class='result-currency'>Jordanian Dinar</div>", unsafe_allow_html=True)
 
+    # Trend Box
     if diff_percent > 0:
-        st.markdown(f"<div class='trend-indicator trend-up'>{abs(diff_percent):.1f}% above regional avg</div>",
-                    unsafe_allow_html=True)
+        st.markdown(f"""
+        <div class='trend-box'>
+            <p class='trend-text'>
+                <span class='trend-up-icon'>↑</span> 
+                {abs(diff_percent):.1f}% above regional avg
+            </p>
+        </div>
+        """, unsafe_allow_html=True)
     else:
-        st.markdown(f"<div class='trend-indicator trend-down'>{abs(diff_percent):.1f}% below regional avg</div>",
-                    unsafe_allow_html=True)
+        st.markdown(f"""
+        <div class='trend-box'>
+            <p class='trend-text'>
+                <span class='trend-down-icon'>↓</span> 
+                {abs(diff_percent):.1f}% below regional avg
+            </p>
+        </div>
+        """, unsafe_allow_html=True)
 
     st.markdown("</div>", unsafe_allow_html=True)
 
