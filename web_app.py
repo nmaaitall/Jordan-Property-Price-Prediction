@@ -88,8 +88,6 @@ if 'lang' not in st.session_state:
     st.session_state.lang = 'en'
 if 'theme' not in st.session_state:
     st.session_state.theme = 'light'
-if 'selected_region_idx' not in st.session_state:
-    st.session_state.selected_region_idx = 0
 
 # Sidebar settings
 with st.sidebar:
@@ -100,7 +98,6 @@ with st.sidebar:
         options=['en', 'ar'],
         format_func=lambda x: 'English' if x == 'en' else 'العربية',
         index=0 if st.session_state.lang == 'en' else 1,
-        key='language_selector',
         horizontal=True
     )
 
@@ -113,7 +110,6 @@ with st.sidebar:
         options=['light', 'dark'],
         format_func=lambda x: 'Light / فاتح' if x == 'light' else 'Dark / داكن',
         index=0 if st.session_state.theme == 'light' else 1,
-        key='theme_selector',
         horizontal=True
     )
 
@@ -135,6 +131,7 @@ input_bg = '#f8fafc' if theme == 'light' else '#0f172a'
 input_border = '#e2e8f0' if theme == 'light' else '#475569'
 hover_bg = '#f1f5f9' if theme == 'light' else '#334155'
 checkbox_bg = '#f8fafc' if theme == 'light' else '#1e293b'
+checkbox_text = '#334155' if theme == 'light' else '#e2e8f0'
 
 st.markdown(f"""
 <style>
@@ -364,9 +361,6 @@ st.markdown(f"""
         font-weight: 800;
     }}
 
-    .trend-up {{ color: #10b981; }}
-    .trend-down {{ color: #ef4444; }}
-
     .trend-text {{
         color: #1e293b;
         font-size: 1.15rem;
@@ -400,6 +394,10 @@ st.markdown(f"""
         font-weight: 600 !important;
         color: {text_primary} !important;
         background: transparent !important;
+    }}
+
+    div[data-baseweb="select"] svg {{
+        fill: {text_primary} !important;
     }}
 
     div[data-baseweb="popover"] {{
@@ -479,7 +477,15 @@ st.markdown(f"""
     .stCheckbox label {{
         font-weight: 600 !important;
         font-size: 0.95rem !important;
-        color: {text_secondary} !important;
+        color: {checkbox_text} !important;
+    }}
+
+    .stCheckbox label span {{
+        color: {checkbox_text} !important;
+    }}
+
+    .stCheckbox label p {{
+        color: {checkbox_text} !important;
     }}
 
     .stButton>button {{
@@ -606,24 +612,23 @@ with col_left:
         f"<div class='input-section'><div class='section-header'><span class='section-icon'>📍</span>{t['location']}</div>",
         unsafe_allow_html=True)
 
-    # Fixed selectbox with proper display
+    # Fixed selectbox - using placeholder to show selected value
     if lang == 'ar':
-        region = st.selectbox(
-            t['region'],
-            regions_ar,
-            index=st.session_state.selected_region_idx,
-            key='region_select'
-        )
+        region_options = regions_ar
+    else:
+        region_options = [regions_en[r] for r in regions_ar]
+
+    region = st.selectbox(
+        t['region'],
+        options=region_options,
+        index=0
+    )
+
+    # Convert to Arabic region name
+    if lang == 'ar':
         region_ar = region
     else:
-        region_options_en = [regions_en[r] for r in regions_ar]
-        region = st.selectbox(
-            t['region'],
-            region_options_en,
-            index=st.session_state.selected_region_idx,
-            key='region_select'
-        )
-        region_ar = regions_ar[region_options_en.index(region)]
+        region_ar = regions_ar[region_options.index(region)]
 
     col1, col2 = st.columns(2)
     with col1:
@@ -643,11 +648,11 @@ with col_left:
 
     col1, col2 = st.columns(2)
     with col1:
-        elevator = st.checkbox(t['elevator'], True)
-        parking = st.checkbox(t['parking'], True)
+        elevator = st.checkbox(t['elevator'], value=True)
+        parking = st.checkbox(t['parking'], value=True)
     with col2:
-        garden = st.checkbox(t['garden'], False)
-        heating = st.checkbox(t['heating'], True)
+        garden = st.checkbox(t['garden'], value=False)
+        heating = st.checkbox(t['heating'], value=True)
 
     st.markdown("<br>", unsafe_allow_html=True)
     services = st.slider(t['services'], 1, 10, 7)
