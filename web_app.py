@@ -378,48 +378,52 @@ st.markdown(f"""
         display: block !important;
     }}
 
+    /* Blue selectbox with white text */
     div[data-baseweb="select"] {{
-        background: {input_bg} !important;
+        background: linear-gradient(135deg, #2a5298 0%, #1e3c72 100%) !important;
         border-radius: 12px !important;
-        border: 2px solid {input_border} !important;
+        border: none !important;
         transition: all 0.3s ease !important;
+        box-shadow: 0 2px 8px rgba(42, 82, 152, 0.2) !important;
     }}
 
     div[data-baseweb="select"]:hover {{
-        border-color: #2a5298 !important;
-        background: {hover_bg} !important;
+        box-shadow: 0 4px 12px rgba(42, 82, 152, 0.35) !important;
+        transform: translateY(-1px);
     }}
 
+    /* White text in closed selectbox */
     div[data-baseweb="select"] > div {{
         padding: 1rem 1.25rem !important;
         font-size: 1rem !important;
         font-weight: 600 !important;
-        color: {text_primary} !important;
+        color: #ffffff !important;
         background: transparent !important;
     }}
 
     div[data-baseweb="select"] > div > div {{
-        color: {text_primary} !important;
+        color: #ffffff !important;
     }}
 
     div[data-baseweb="select"] > div > div > div {{
-        color: {text_primary} !important;
+        color: #ffffff !important;
     }}
 
     div[data-baseweb="select"] * {{
-        color: {text_primary} !important;
+        color: #ffffff !important;
     }}
 
     div[data-baseweb="select"] span {{
-        color: {text_primary} !important;
+        color: #ffffff !important;
     }}
 
     div[data-baseweb="select"] input {{
-        color: {text_primary} !important;
+        color: #ffffff !important;
     }}
 
+    /* White arrow icon */
     div[data-baseweb="select"] svg {{
-        fill: {text_primary} !important;
+        fill: #ffffff !important;
     }}
 
     div[data-baseweb="popover"] {{
