@@ -406,7 +406,15 @@ st.markdown(f"""
         color: {text_primary} !important;
     }}
 
+    div[data-baseweb="select"] * {{
+        color: {text_primary} !important;
+    }}
+
     div[data-baseweb="select"] span {{
+        color: {text_primary} !important;
+    }}
+
+    div[data-baseweb="select"] input {{
         color: {text_primary} !important;
     }}
 
@@ -641,12 +649,13 @@ with col_left:
         except ValueError:
             default_index = 0
 
-    # Selectbox with session state
+    # Selectbox with session state and placeholder
     region = st.selectbox(
         t['region'],
         options=region_options,
         index=default_index,
-        key='region_selectbox'
+        key='region_selectbox',
+        placeholder="Choose a region..." if lang == 'en' else "اختر منطقة..."
     )
 
     # Save selected region to session state
