@@ -83,17 +83,18 @@ translations = {
     }
 }
 
-# Initialize session state for language and theme if not exists
+# Initialize session state
 if 'lang' not in st.session_state:
     st.session_state.lang = 'en'
 if 'theme' not in st.session_state:
     st.session_state.theme = 'light'
+if 'selected_region_idx' not in st.session_state:
+    st.session_state.selected_region_idx = 0
 
 # Sidebar settings
 with st.sidebar:
     st.markdown("### Settings / الإعدادات")
 
-    # Language selection
     lang_choice = st.radio(
         "Language / اللغة",
         options=['en', 'ar'],
@@ -107,7 +108,6 @@ with st.sidebar:
         st.session_state.lang = lang_choice
         st.rerun()
 
-    # Theme selection
     theme_choice = st.radio(
         "Theme / المظهر",
         options=['light', 'dark'],
@@ -125,8 +125,7 @@ lang = st.session_state.lang
 theme = st.session_state.theme
 t = translations[lang]
 
-# Dynamic CSS based on theme
-bg_color = '#ffffff' if theme == 'light' else '#0f172a'
+# Dynamic CSS
 bg_gradient = 'linear-gradient(135deg, #f5f7fa 0%, #e8ecf1 100%)' if theme == 'light' else 'linear-gradient(135deg, #0f172a 0%, #1e293b 100%)'
 card_bg = '#ffffff' if theme == 'light' else '#1e293b'
 text_primary = '#1e3c72' if theme == 'light' else '#f1f5f9'
@@ -137,7 +136,6 @@ input_border = '#e2e8f0' if theme == 'light' else '#475569'
 hover_bg = '#f1f5f9' if theme == 'light' else '#334155'
 checkbox_bg = '#f8fafc' if theme == 'light' else '#1e293b'
 
-# Enhanced Professional CSS
 st.markdown(f"""
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:wght@700;800&display=swap');
@@ -162,14 +160,6 @@ st.markdown(f"""
     section[data-testid="stSidebar"] .stMarkdown h3 {{
         color: {text_primary} !important;
         font-size: 1.2rem !important;
-    }}
-
-    section[data-testid="stSidebar"] .stMarkdown p {{
-        color: {text_secondary} !important;
-    }}
-
-    section[data-testid="stSidebar"] .stMarkdown strong {{
-        color: {text_primary} !important;
     }}
 
     section[data-testid="stSidebar"] label {{
@@ -612,20 +602,28 @@ st.markdown(f"""
 col_left, col_right = st.columns([1.2, 1], gap="large")
 
 with col_left:
-    # Location & Basic Info
     st.markdown(
         f"<div class='input-section'><div class='section-header'><span class='section-icon'>📍</span>{t['location']}</div>",
         unsafe_allow_html=True)
 
-    # Show regions based on language
+    # Fixed selectbox with proper display
     if lang == 'ar':
-        region_display = regions_ar
-        region = st.selectbox(t['region'], region_display, index=0)
+        region = st.selectbox(
+            t['region'],
+            regions_ar,
+            index=st.session_state.selected_region_idx,
+            key='region_select'
+        )
         region_ar = region
     else:
-        region_display = [regions_en[r] for r in regions_ar]
-        region = st.selectbox(t['region'], region_display, index=0)
-        region_ar = [k for k, v in regions_en.items() if v == region][0]
+        region_options_en = [regions_en[r] for r in regions_ar]
+        region = st.selectbox(
+            t['region'],
+            region_options_en,
+            index=st.session_state.selected_region_idx,
+            key='region_select'
+        )
+        region_ar = regions_ar[region_options_en.index(region)]
 
     col1, col2 = st.columns(2)
     with col1:
@@ -639,7 +637,6 @@ with col_left:
 
     st.markdown("</div>", unsafe_allow_html=True)
 
-    # Amenities
     st.markdown(
         f"<div class='input-section'><div class='section-header'><span class='section-icon'>✨</span>{t['features']}</div>",
         unsafe_allow_html=True)
@@ -657,7 +654,6 @@ with col_left:
 
     st.markdown("</div>", unsafe_allow_html=True)
 
-    # Prediction Button
     predict_button = st.button(t['calculate'])
 
 with col_right:
@@ -682,7 +678,6 @@ with col_right:
         region_avg = df[df['المنطقة'] == region_ar]['السعر_دينار'].mean()
         diff_percent = ((predicted_price - region_avg) / region_avg) * 100
 
-        trend_direction = 'up' if diff_percent > 0 else 'down'
         trend_icon = '↑' if diff_percent > 0 else '↓'
         trend_color = '#10b981' if diff_percent > 0 else '#ef4444'
         trend_text = t['above'] if diff_percent > 0 else t['below']
@@ -703,7 +698,6 @@ with col_right:
             </div>
         """, unsafe_allow_html=True)
 
-        # Info Cards
         st.markdown(f"""
         <div class='info-grid'>
             <div class='info-card-mini'>
@@ -717,14 +711,12 @@ with col_right:
         </div>
         """, unsafe_allow_html=True)
 
-        # Chart
         st.markdown(f"<div class='chart-section'><div class='chart-title'>{t['comparison']}</div>",
                     unsafe_allow_html=True)
 
         bar_color = '#2a5298' if theme == 'light' else '#60a5fa'
         avg_color = '#94a3b8' if theme == 'light' else '#475569'
         grid_color = '#e2e8f0' if theme == 'light' else '#334155'
-        text_color = text_primary
 
         fig = go.Figure(data=[
             go.Bar(
@@ -736,7 +728,7 @@ with col_right:
                 ),
                 text=[f'{predicted_price:,.0f}', f'{region_avg:,.0f}'],
                 textposition='outside',
-                textfont=dict(size=14, weight=700, color=text_color)
+                textfont=dict(size=14, weight=700, color=text_primary)
             )
         ])
 
