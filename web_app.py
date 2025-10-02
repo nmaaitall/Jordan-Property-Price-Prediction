@@ -665,6 +665,31 @@ with col_left:
     # Save selected region to session state
     st.session_state.selected_region = region
 
+    # Show selected region clearly for visual feedback
+    if region:
+        st.markdown(f"""
+        <div style='background: linear-gradient(135deg, #2a5298 0%, #1e3c72 100%); 
+                    padding: 0.75rem 1.25rem; 
+                    border-radius: 10px; 
+                    margin-top: 0.5rem;
+                    text-align: center;
+                    box-shadow: 0 2px 8px rgba(42, 82, 152, 0.25);'>
+            <span style='color: rgba(255,255,255,0.8); 
+                         font-size: 0.85rem; 
+                         font-weight: 600;
+                         text-transform: uppercase;
+                         letter-spacing: 1px;'>
+                {'Selected Region' if lang == 'en' else 'المنطقة المختارة'}
+            </span>
+            <div style='color: #ffffff; 
+                        font-size: 1.3rem; 
+                        font-weight: 700; 
+                        margin-top: 0.25rem;'>
+                {region}
+            </div>
+        </div>
+        """, unsafe_allow_html=True)
+
     # Convert to Arabic region name for model
     if lang == 'ar':
         region_ar = region
