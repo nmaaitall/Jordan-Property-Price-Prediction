@@ -2,11 +2,11 @@ import pandas as pd
 import numpy as np
 import random
 
-# تثبيت الـ random seed عشان نقدر نكرر النتائج
+# Set random seed for reproducibility
 np.random.seed(42)
 random.seed(42)
 
-# المناطق الأردنية مع متوسط سعر المتر الحقيقي (2024-2025)
+# Jordanian regions with average price per square meter (2024-2025)
 regions = {
     'عبدون': 1200,
     'دير غبار': 1000,
@@ -30,10 +30,10 @@ regions = {
     'النصر': 400,
 }
 
-# عدد العقارات
+# Number of properties to generate
 n_properties = 1500
 
-# توليد البيانات
+# Initialize data dictionary
 data = {
     'المنطقة': [],
     'المساحة_متر': [],
@@ -45,19 +45,19 @@ data = {
     'يوجد_موقف': [],
     'يوجد_حديقة': [],
     'يوجد_تدفئة_مركزية': [],
-    'قرب_الخدمات': [],  # 1-10
+    'قرب_الخدمات': [],  # Scale: 1-10
     'السعر_دينار': []
 }
 
 for _ in range(n_properties):
-    # اختيار منطقة عشوائية
+    # Select random region
     region = random.choice(list(regions.keys()))
     base_price = regions[region]
 
-    # توليد المواصفات بشكل واقعي
+    # Generate realistic property specifications
     area = np.random.randint(80, 400)
 
-    # عدد الغرف حسب المساحة (أكثر واقعية)
+    # Number of rooms based on area (more realistic distribution)
     if area < 100:
         rooms = np.random.randint(1, 3)
     elif area < 150:
@@ -71,7 +71,7 @@ for _ in range(n_properties):
     age = np.random.randint(0, 35)
     floor = np.random.randint(0, 12)
 
-    # مصعد أكثر احتمالاً في الطوابق العالية والمناطق الغالية
+    # Elevator more likely in higher floors and expensive areas
     has_elevator = 1 if (floor > 2 and random.random() > 0.25) or (floor > 4) else 0
 
     has_parking = 1 if random.random() > 0.25 else 0
@@ -79,28 +79,28 @@ for _ in range(n_properties):
     has_heating = 1 if base_price > 700 and random.random() > 0.4 else 0
     services_proximity = np.random.randint(1, 11)
 
-    # حساب السعر بطريقة واقعية
+    # Calculate realistic price
     price = base_price * area
 
-    # تعديلات السعر
-    price *= (1 - age * 0.012)  # كل سنة تقلل 1.2%
-    price *= (1 + rooms * 0.04)  # كل غرفة تزيد 4%
-    price *= (1 + has_elevator * 0.10)  # مصعد يزيد 10%
-    price *= (1 + has_parking * 0.06)  # موقف يزيد 6%
-    price *= (1 + has_garden * 0.08)  # حديقة تزيد 8%
-    price *= (1 + has_heating * 0.05)  # تدفئة مركزية تزيد 5%
-    price *= (1 + services_proximity * 0.015)  # قرب الخدمات
+    # Price adjustments based on property features
+    price *= (1 - age * 0.012)  # Each year decreases value by 1.2%
+    price *= (1 + rooms * 0.04)  # Each room adds 4%
+    price *= (1 + has_elevator * 0.10)  # Elevator adds 10%
+    price *= (1 + has_parking * 0.06)  # Parking adds 6%
+    price *= (1 + has_garden * 0.08)  # Garden adds 8%
+    price *= (1 + has_heating * 0.05)  # Central heating adds 5%
+    price *= (1 + services_proximity * 0.015)  # Proximity to services
 
-    # تعديل حسب الطابق
+    # Floor-based adjustment
     if floor == 0:
-        price *= 0.95  # الأرضي أقل شوي
+        price *= 0.95  # Ground floor slightly cheaper
     elif floor >= 8:
-        price *= 1.05  # الطوابق العالية أغلى
+        price *= 1.05  # Higher floors more expensive
 
-    # إضافة تباين واقعي
+    # Add realistic variance
     price *= np.random.uniform(0.88, 1.12)
 
-    # إضافة البيانات
+    # Append data to dictionary
     data['المنطقة'].append(region)
     data['المساحة_متر'].append(area)
     data['عدد_الغرف'].append(rooms)
@@ -114,17 +114,17 @@ for _ in range(n_properties):
     data['قرب_الخدمات'].append(services_proximity)
     data['السعر_دينار'].append(int(price))
 
-# إنشاء DataFrame
+# Create DataFrame
 df = pd.DataFrame(data)
 
-# حفظ البيانات
+# Save to CSV file
 df.to_csv('jordan_properties.csv', index=False, encoding='utf-8-sig')
 
-print("✅ تم إنشاء dataset العقارات الأردنية بنجاح!")
-print(f"📊 عدد العقارات: {len(df)}")
-print(f"\n📋 عينة من البيانات:")
+print("Dataset created successfully!")
+print(f"Total properties: {len(df)}")
+print(f"\nSample data:")
 print(df.head(10))
-print(f"\n💰 نطاق الأسعار: {df['السعر_دينار'].min():,} - {df['السعر_دينار'].max():,} دينار")
-print(f"💰 متوسط السعر: {df['السعر_دينار'].mean():,.0f} دينار")
-print(f"\n🏘️ توزيع العقارات حسب المنطقة:")
+print(f"\nPrice range: {df['السعر_دينار'].min():,} - {df['السعر_دينار'].max():,} JOD")
+print(f"Average price: {df['السعر_دينار'].mean():,.0f} JOD")
+print(f"\nProperties distribution by region:")
 print(df['المنطقة'].value_counts())

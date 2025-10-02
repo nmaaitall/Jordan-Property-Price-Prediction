@@ -24,12 +24,12 @@ translations = {
         'bathrooms': 'Number of Bathrooms',
         'age': 'Property Age (Years)',
         'features': 'Property Features & Amenities',
-        'elevator': '🛗 Elevator Available',
-        'parking': '🚗 Parking Space',
-        'garden': '🌳 Private Garden',
-        'heating': '🔥 Central Heating',
+        'elevator': 'Elevator Available',
+        'parking': 'Parking Space',
+        'garden': 'Private Garden',
+        'heating': 'Central Heating',
         'services': 'Proximity to Services & Amenities (1-10)',
-        'calculate': '🔍 Calculate Property Value',
+        'calculate': 'Calculate Property Value',
         'estimated': 'Estimated Market Value',
         'currency': 'Jordanian Dinar (JOD)',
         'above': 'Above Regional Average',
@@ -44,7 +44,8 @@ translations = {
         'language': 'Language',
         'theme': 'Theme',
         'light': 'Light',
-        'dark': 'Dark'
+        'dark': 'Dark',
+        'floor': 'Floor Number'
     },
     'ar': {
         'title': 'RealPredict',
@@ -57,12 +58,12 @@ translations = {
         'bathrooms': 'عدد الحمامات',
         'age': 'عمر العقار (سنوات)',
         'features': 'مميزات ووسائل الراحة',
-        'elevator': '🛗 يوجد مصعد',
-        'parking': '🚗 موقف سيارات',
-        'garden': '🌳 حديقة خاصة',
-        'heating': '🔥 تدفئة مركزية',
+        'elevator': 'يوجد مصعد',
+        'parking': 'موقف سيارات',
+        'garden': 'حديقة خاصة',
+        'heating': 'تدفئة مركزية',
         'services': 'القرب من الخدمات (1-10)',
-        'calculate': '🔍 احسب قيمة العقار',
+        'calculate': 'احسب قيمة العقار',
         'estimated': 'القيمة السوقية المقدرة',
         'currency': 'دينار أردني',
         'above': 'أعلى من متوسط المنطقة',
@@ -77,30 +78,51 @@ translations = {
         'language': 'اللغة',
         'theme': 'المظهر',
         'light': 'فاتح',
-        'dark': 'داكن'
+        'dark': 'داكن',
+        'floor': 'رقم الطابق'
     }
 }
 
+# Initialize session state for language and theme if not exists
+if 'lang' not in st.session_state:
+    st.session_state.lang = 'en'
+if 'theme' not in st.session_state:
+    st.session_state.theme = 'light'
+
 # Sidebar settings
 with st.sidebar:
-    st.markdown("### ⚙️ Settings / الإعدادات")
+    st.markdown("### Settings / الإعدادات")
 
-    lang = st.radio(
-        "🌐 Language / اللغة",
+    # Language selection
+    lang_choice = st.radio(
+        "Language / اللغة",
         options=['en', 'ar'],
         format_func=lambda x: 'English' if x == 'en' else 'العربية',
-        key='language',
+        index=0 if st.session_state.lang == 'en' else 1,
+        key='language_selector',
         horizontal=True
     )
 
-    theme = st.radio(
-        "🎨 Theme / المظهر",
+    if lang_choice != st.session_state.lang:
+        st.session_state.lang = lang_choice
+        st.rerun()
+
+    # Theme selection
+    theme_choice = st.radio(
+        "Theme / المظهر",
         options=['light', 'dark'],
-        format_func=lambda x: 'Light' if x == 'light' else 'Dark',
-        key='theme',
+        format_func=lambda x: 'Light / فاتح' if x == 'light' else 'Dark / داكن',
+        index=0 if st.session_state.theme == 'light' else 1,
+        key='theme_selector',
         horizontal=True
     )
 
+    if theme_choice != st.session_state.theme:
+        st.session_state.theme = theme_choice
+        st.rerun()
+
+lang = st.session_state.lang
+theme = st.session_state.theme
 t = translations[lang]
 
 # Dynamic CSS based on theme
@@ -185,7 +207,6 @@ st.markdown(f"""
         max-width: 1400px;
     }}
 
-    /* Header Section */
     .header-container {{
         background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
         border-radius: 24px;
@@ -242,7 +263,6 @@ st.markdown(f"""
         font-weight: 400;
     }}
 
-    /* Main Grid Layout */
     .input-section {{
         background: {card_bg};
         border-radius: 20px;
@@ -269,7 +289,6 @@ st.markdown(f"""
         font-size: 1.6rem;
     }}
 
-    /* Enhanced Result Card */
     .result-card {{
         background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
         border-radius: 24px;
@@ -365,7 +384,6 @@ st.markdown(f"""
         margin: 0;
     }}
 
-    /* Enhanced Form Elements */
     label {{
         font-weight: 600 !important;
         color: {text_secondary} !important;
@@ -374,7 +392,6 @@ st.markdown(f"""
         display: block !important;
     }}
 
-    /* Selectbox Styling */
     div[data-baseweb="select"] {{
         background: {input_bg} !important;
         border-radius: 12px !important;
@@ -425,7 +442,6 @@ st.markdown(f"""
         color: #ffffff !important;
     }}
 
-    /* Number Input */
     .stNumberInput > div > div > input {{
         background: {input_bg} !important;
         border: 2px solid {input_border} !important;
@@ -443,7 +459,6 @@ st.markdown(f"""
         background: {card_bg} !important;
     }}
 
-    /* Slider */
     .stSlider > div > div > div > div {{
         background: linear-gradient(90deg, #2a5298 0%, #1e3c72 100%) !important;
         height: 6px !important;
@@ -457,7 +472,6 @@ st.markdown(f"""
         box-shadow: 0 3px 12px rgba(42, 82, 152, 0.4) !important;
     }}
 
-    /* Checkboxes */
     .stCheckbox {{
         background: {checkbox_bg};
         padding: 1rem 1.25rem;
@@ -478,7 +492,6 @@ st.markdown(f"""
         color: {text_secondary} !important;
     }}
 
-    /* Button */
     .stButton>button {{
         width: 100%;
         background: linear-gradient(135deg, #2a5298 0%, #1e3c72 100%);
@@ -500,7 +513,6 @@ st.markdown(f"""
         box-shadow: 0 10px 30px rgba(42, 82, 152, 0.45);
     }}
 
-    /* Chart Container */
     .chart-section {{
         background: {card_bg};
         border-radius: 20px;
@@ -517,7 +529,6 @@ st.markdown(f"""
         margin-bottom: 1.5rem;
     }}
 
-    /* Info Cards */
     .info-grid {{
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -584,32 +595,6 @@ def load_model():
 
 model, le, regions_ar, regions_en, df = load_model()
 
-# Settings Header (Above main content)
-settings_container = st.container()
-with settings_container:
-    st.markdown(f"""
-    <div style='background: {card_bg}; padding: 1rem 1.5rem; border-radius: 12px; margin-bottom: 1.5rem; 
-                border: 2px solid {border_color}; display: flex; justify-content: space-between; align-items: center;'>
-        <div style='display: flex; gap: 2rem; align-items: center;'>
-            <div>
-                <span style='font-size: 1.1rem; color: {text_secondary}; font-weight: 600;'>🌐 Language:</span>
-                <span style='font-size: 1.1rem; color: {text_primary}; font-weight: 700; margin-left: 0.5rem;'>
-                    {'English' if lang == 'en' else 'العربية'}
-                </span>
-            </div>
-            <div>
-                <span style='font-size: 1.1rem; color: {text_secondary}; font-weight: 600;'>🎨 Theme:</span>
-                <span style='font-size: 1.1rem; color: {text_primary}; font-weight: 700; margin-left: 0.5rem;'>
-                    {'Light' if theme == 'light' else 'Dark'}
-                </span>
-            </div>
-        </div>
-        <div style='font-size: 0.9rem; color: {text_secondary};'>
-            ⚙️ Change in Sidebar
-        </div>
-    </div>
-    """, unsafe_allow_html=True)
-
 # Header
 st.markdown(f"""
 <div class='header-container'>
@@ -632,9 +617,15 @@ with col_left:
         f"<div class='input-section'><div class='section-header'><span class='section-icon'>📍</span>{t['location']}</div>",
         unsafe_allow_html=True)
 
-    region_options = [regions_en[r] for r in regions_ar]
-    region = st.selectbox(t['region'], region_options, index=0)
-    region_ar = [k for k, v in regions_en.items() if v == region][0]
+    # Show regions based on language
+    if lang == 'ar':
+        region_display = regions_ar
+        region = st.selectbox(t['region'], region_display, index=0)
+        region_ar = region
+    else:
+        region_display = [regions_en[r] for r in regions_ar]
+        region = st.selectbox(t['region'], region_display, index=0)
+        region_ar = [k for k, v in regions_en.items() if v == region][0]
 
     col1, col2 = st.columns(2)
     with col1:
@@ -643,6 +634,8 @@ with col_left:
     with col2:
         bathrooms = st.number_input(t['bathrooms'], 1, 5, 2, 1)
         age = st.number_input(t['age'], 0, 100, 5, 1)
+
+    floor = st.number_input(t['floor'], 0, 20, 3, 1)
 
     st.markdown("</div>", unsafe_allow_html=True)
 
@@ -676,7 +669,7 @@ with col_right:
             'عدد_الغرف': [rooms],
             'عدد_الحمامات': [bathrooms],
             'عمر_البناء_سنوات': [age],
-            'طابق': [3],
+            'طابق': [floor],
             'يوجد_مصعد': [1 if elevator else 0],
             'يوجد_موقف': [1 if parking else 0],
             'يوجد_حديقة': [1 if garden else 0],
@@ -689,7 +682,6 @@ with col_right:
         region_avg = df[df['المنطقة'] == region_ar]['السعر_دينار'].mean()
         diff_percent = ((predicted_price - region_avg) / region_avg) * 100
 
-        # Result Card with proper HTML rendering
         trend_direction = 'up' if diff_percent > 0 else 'down'
         trend_icon = '↑' if diff_percent > 0 else '↓'
         trend_color = '#10b981' if diff_percent > 0 else '#ef4444'
@@ -729,7 +721,6 @@ with col_right:
         st.markdown(f"<div class='chart-section'><div class='chart-title'>{t['comparison']}</div>",
                     unsafe_allow_html=True)
 
-        # Chart colors based on theme
         bar_color = '#2a5298' if theme == 'light' else '#60a5fa'
         avg_color = '#94a3b8' if theme == 'light' else '#475569'
         grid_color = '#e2e8f0' if theme == 'light' else '#334155'
