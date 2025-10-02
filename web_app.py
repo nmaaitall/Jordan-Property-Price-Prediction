@@ -88,6 +88,8 @@ if 'lang' not in st.session_state:
     st.session_state.lang = 'en'
 if 'theme' not in st.session_state:
     st.session_state.theme = 'light'
+if 'selected_region' not in st.session_state:
+    st.session_state.selected_region = None
 
 # Sidebar settings
 with st.sidebar:
@@ -396,6 +398,18 @@ st.markdown(f"""
         background: transparent !important;
     }}
 
+    div[data-baseweb="select"] > div > div {{
+        color: {text_primary} !important;
+    }}
+
+    div[data-baseweb="select"] > div > div > div {{
+        color: {text_primary} !important;
+    }}
+
+    div[data-baseweb="select"] span {{
+        color: {text_primary} !important;
+    }}
+
     div[data-baseweb="select"] svg {{
         fill: {text_primary} !important;
     }}
@@ -612,19 +626,33 @@ with col_left:
         f"<div class='input-section'><div class='section-header'><span class='section-icon'>📍</span>{t['location']}</div>",
         unsafe_allow_html=True)
 
-    # Fixed selectbox - using placeholder to show selected value
+    # Prepare region options based on language
     if lang == 'ar':
         region_options = regions_ar
     else:
         region_options = [regions_en[r] for r in regions_ar]
 
+    # Get default index
+    if st.session_state.selected_region is None:
+        default_index = 0
+    else:
+        try:
+            default_index = region_options.index(st.session_state.selected_region)
+        except ValueError:
+            default_index = 0
+
+    # Selectbox with session state
     region = st.selectbox(
         t['region'],
         options=region_options,
-        index=0
+        index=default_index,
+        key='region_selectbox'
     )
 
-    # Convert to Arabic region name
+    # Save selected region to session state
+    st.session_state.selected_region = region
+
+    # Convert to Arabic region name for model
     if lang == 'ar':
         region_ar = region
     else:
